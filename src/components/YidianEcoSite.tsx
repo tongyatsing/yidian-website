@@ -1,42 +1,200 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
-  Building2,
-  Cpu,
-  Leaf,
-  Phone,
-  Mail,
-  MapPin,
-  ShieldCheck,
-  Lock,
-  User,
-  KeyRound,
-  ChevronRight,
-  FileSpreadsheet,
-  Bot,
-  AlertTriangle,
-  Sparkles,
-  CheckCircle2,
-  Search,
-  Clock3,
-  Database,
-  MessageSquare,
-  ArrowRight,
-  Upload,
-  ClipboardList,
-  ShieldAlert,
-  BadgeCheck,
-  Recycle,
-  Factory,
-  FileCheck2,
-  BarChart3,
+  Cpu, Leaf, Phone, Mail, MapPin, ShieldCheck, ChevronRight,
+  FileSpreadsheet, AlertTriangle, Database, Search,
+  ShieldAlert, BadgeCheck, Recycle, Factory, FileCheck2, BarChart3,
+  CheckCircle2, FileText, Image, Play, RotateCcw, Loader2, Eye,
+  ArrowLeft, Camera, ArrowUp, Lock, Server, Shield,
+  BookOpen, Target, Layers, FileSearch, ClipboardCheck,
 } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { motion, AnimatePresence } from "motion/react";
 
-function LogoMark({ className = "h-8 w-8" }) {
+/* ═══════════════════════════════════════════════════════════
+   DATA
+   ═══════════════════════════════════════════════════════════ */
+
+const services = [
+  { icon: ShieldCheck, title: "环保管家咨询", desc: "为企业提供政策解读、环保管理制度建设、日常合规问题研判与综合咨询服务。" },
+  { icon: Factory, title: "建设项目环境影响评价", desc: "承接建设项目环境影响报告相关技术服务，并提供项目全流程技术支持。" },
+  { icon: FileCheck2, title: "排污许可申报维护", desc: "为企业提供排污许可证申请、变更、延续及执行报告相关技术服务。" },
+  { icon: Recycle, title: "危废与固废管理", desc: "提供危险废物管理计划、台账、申报、联单、规范化管理等咨询服务，并可结合知微开展资料审查与一致性核查辅助。" },
+  { icon: Leaf, title: "VOCs 治理咨询", desc: "开展挥发性有机物排放识别、治理方案设计与运行管理咨询。" },
+  { icon: AlertTriangle, title: "应急预案编制", desc: "开展突发环境事件应急预案编制、评审、备案及演练指导。" },
+  { icon: BadgeCheck, title: "环保竣工验收", desc: "提供建设项目竣工环境保护验收相关技术支持。" },
+  { icon: Search, title: "清洁生产审核", desc: "为企业提供清洁生产审核评估、方案设计与实施跟踪服务。" },
+  { icon: Cpu, title: "绿色制造体系建设", desc: "提供绿色工厂、绿色供应链、绿色产品等申报咨询服务。" },
+  { icon: BarChart3, title: "双碳服务", desc: "提供碳排放核算、碳足迹评价与减碳路径规划等咨询服务。" },
+  { icon: Database, title: "政府环保专项资金申请", desc: "协助企业开展各级环保专项资金、补贴类项目申报服务。" },
+];
+
+const contactInfo = [
+  { icon: Phone, label: "联系电话", text: "13660969154" },
+  { icon: Mail, label: "企业邮箱", text: "yidianhuanbao@yeah.com" },
+  { icon: MapPin, label: "公司地址", text: "广州市天河区天慧路10号A409室" },
+];
+
+const navItems: [string, string][] = [
+  ["home", "首页"], ["about", "关于我们"], ["services", "服务范围"],
+  ["cases", "项目案例"], ["zhiwei", "知微智能体"], ["demo", "产品演示"],
+  ["contact", "联系我们"],
+];
+
+const btnPrimary = "rounded-full bg-gradient-to-r from-emerald-700 to-teal-600 text-sm font-medium text-white transition hover:from-emerald-800 hover:to-teal-700";
+const btnSecondary = "rounded-full border border-emerald-200 bg-white text-sm font-medium text-emerald-800 transition hover:bg-emerald-50";
+const CURRENT_YEAR = new Date().getFullYear();
+
+const professionalCases = [
+  {
+    title: "某市无废城市技术服务",
+    desc: "协助地方政府推进无废城市建设，提供技术支撑、指标设计与实施督导。",
+    metrics: [
+      { value: "12", unit: "个", label: "覆盖工业园区" },
+      { value: "98%", unit: "", label: "指标达标率" },
+    ],
+    tags: ["政府技术支撑", "无废城市"],
+  },
+  {
+    title: "某区无废社区示范项目",
+    desc: "从社区场景出发，策划无废试点方案并推动落地，形成可复制经验。",
+    metrics: [
+      { value: "6", unit: "个", label: "试点社区" },
+      { value: "3", unit: "套", label: "可复制方案" },
+    ],
+    tags: ["社区场景", "示范推广"],
+  },
+  {
+    title: "某县低碳示范创建",
+    desc: "编制低碳发展方案，搭建碳排放核算体系，服务区域绿色转型。",
+    metrics: [
+      { value: "15%", unit: "", label: "碳排放降幅" },
+      { value: "1", unit: "套", label: "核算体系" },
+    ],
+    tags: ["双碳转型", "核算体系"],
+  },
+];
+
+const productCases = [
+  {
+    title: "脱敏案例 A｜跨资料一致性比对辅助",
+    desc: "围绕台账、环评、排污许可等资料进行交叉比对，辅助识别危废名称、代码、数量及处置去向等不一致问题，并形成结构化审查结果。",
+    tags: ["跨资料比对", "结构化输出"],
+  },
+  {
+    title: "脱敏案例 B｜鉴别复核专家初审辅助",
+    desc: "围绕鉴别报告及附件开展全文读取、问题树扫描和证据归集，辅助识别采样代表性、历史数据引用、名录对照、折算依据等关键问题，并形成可复核底稿。",
+    tags: ["鉴别复核", "证据链"],
+  },
+  {
+    title: "脱敏案例 C｜复杂资料审查辅助",
+    desc: "针对扫描件、长文本附件和多份关联资料场景，辅助进行信息抽取、依据归集与问题提示，提高复杂资料审查效率。",
+    tags: ["复杂资料", "审查辅助"],
+  },
+];
+
+/* Demo data */
+interface DemoScenario {
+  id: string; tag: string; version: string; title: string; desc: string;
+  icon: React.ComponentType<{ className?: string }>;
+  files: { name: string; type: string; size: string; icon: React.ComponentType<{ className?: string }> }[];
+  parseResult: string;
+  steps: { label: string; detail: string; duration: number }[];
+  findings: { level: string; code: string; text: string }[];
+  summary: { total: number; high: number; medium: number; low: number; duration: string };
+}
+
+const demoScenarios: DemoScenario[] = [
+  {
+    id: "cross", tag: "主线能力", version: "跨资料一致性比对",
+    title: "台账 × 排污许可 × 环评报告 联合审查",
+    desc: "围绕台账、排污许可证、环评报告等多来源资料进行交叉比对，辅助识别名称、代码、数量和处置方式等不一致问题。",
+    icon: ShieldAlert,
+    files: [
+      { name: "企业A-危废管理台账-2025.xlsx", type: "Excel", size: "1.8 MB", icon: FileSpreadsheet },
+      { name: "企业A-排污许可证（副本）.pdf", type: "PDF", size: "5.2 MB", icon: FileText },
+      { name: "企业A-环境影响报告书.pdf", type: "PDF", size: "12.6 MB", icon: FileText },
+    ],
+    parseResult: "台账 156 条记录（8类危废），排污许可证提取 6 类许可废物，环评报告提取产生量预测与贮存要求。",
+    steps: [
+      { label: "资料接收与解析", detail: "分别解析台账 Excel、排污许可证 PDF、环评报告 PDF...", duration: 2500 },
+      { label: "信息抽取", detail: "提取台账字段、许可废物种类、贮存方式、环评产生量预测...", duration: 2000 },
+      { label: "对象对齐", detail: "将不同来源资料中的同类危废对象进行标准化关联...", duration: 3000 },
+      { label: "问题发现", detail: "围绕名称、代码、数量、处置方式等进行交叉核查...", duration: 2500 },
+      { label: "依据归集", detail: "围绕已识别问题归集原文表述、标准要求和相关依据...", duration: 3000 },
+      { label: "审查输出", detail: "形成结构化审查结果...", duration: 1500 },
+    ],
+    findings: [
+      { level: "high", code: "C001", text: "台账实际记录 8 类危废，排污许可证载明 6 类——多出的 2 类未在许可证中申报，存在超许可范围管理风险。" },
+      { level: "high", code: "C002", text: "环评报告预测年产生量上限 85 吨/年，台账实际累计 112.6 吨，超出 32.5%，存在超总量风险。" },
+      { level: "high", code: "C003", text: "排污许可证载明贮存方式为「专用容器」，台账部分记录去向标注为「露天暂存」，与许可不一致。" },
+      { level: "medium", code: "C004", text: "环评报告中废物名称与台账表达不一致，建议统一为环评报告口径。" },
+      { level: "medium", code: "C005", text: "台账中部分危废的产生工序描述与环评报告中对应工序不一致，建议核实是否工艺变更未重新报批。" },
+    ],
+    summary: { total: 5, high: 3, medium: 2, low: 0, duration: "23 秒" },
+  },
+  {
+    id: "ident", tag: "持续完善中", version: "鉴别复核辅助",
+    title: "鉴别报告专家初审辅助",
+    desc: "围绕鉴别报告及附件进行全文读取、问题树扫描、证据归集与复核表达辅助，展示复杂资料审查场景下的应用方式。",
+    icon: Search,
+    files: [
+      { name: "企业B-危废鉴别报告.pdf", type: "PDF", size: "18.3 MB", icon: FileText },
+      { name: "企业B-鉴别附件（检测报告等）.pdf", type: "PDF", size: "8.7 MB", icon: FileText },
+      { name: "企业B-环评批复.pdf", type: "PDF", size: "3.2 MB", icon: FileText },
+    ],
+    parseResult: "鉴别报告 86 页，附件含 4 份检测报告、采样记录表、工艺流程图。启动全文读取与问题树扫描。",
+    steps: [
+      { label: "全文读取", detail: "读取鉴别报告正文、检测报告数据、采样记录...", duration: 3000 },
+      { label: "信息抽取", detail: "提取鉴别对象、采样点位、检测指标、标准引用...", duration: 2500 },
+      { label: "问题树扫描", detail: "围绕采样代表性、检测项目筛选、名录对照、标准适用性等维度审查...", duration: 3500 },
+      { label: "证据归集", detail: "将原文摘录、检测数据、标准依据组织为证据链...", duration: 3000 },
+      { label: "复核表达", detail: "形成可供专家复核修改的审查底稿...", duration: 2000 },
+    ],
+    findings: [
+      { level: "high", code: "ID001", text: "采样点位仅覆盖 2 个车间，未涵盖报告所述全部 4 个产废工序，采样代表性论证不充分。" },
+      { level: "high", code: "ID002", text: "检测项目未包含《国家危险废物名录》中对应废物类别的特征污染物，检测项目筛选依据不充分。" },
+      { level: "medium", code: "ID003", text: "报告引用的浸出毒性标准版本与现行有效标准不一致，建议核实标准适用性。" },
+      { level: "medium", code: "ID004", text: "历史监测数据引用缺少数据来源说明和时间范围标注，依据链不完整。" },
+      { level: "low", code: "ID005", text: "报告中部分危废名称表述与《国家危险废物名录》不一致，建议规范统一。" },
+    ],
+    summary: { total: 5, high: 2, medium: 2, low: 1, duration: "38 秒" },
+  },
+  {
+    id: "field", tag: "拓展方向", version: "现场核查辅助",
+    title: "危废贮存间现场核查辅助",
+    desc: "围绕现场照片、标签信息与台账资料的联动分析，展示现场核查辅助方向的能力设想与演示样例。",
+    icon: Camera,
+    files: [
+      { name: "现场照片（8张）.zip", type: "照片", size: "24.5 MB", icon: Image },
+      { name: "企业C-危废台账-2025.xlsx", type: "Excel", size: "1.2 MB", icon: FileSpreadsheet },
+    ],
+    parseResult: "接收 8 张现场照片，台账 93 条记录（6类危废）。启动识别与联动分析。",
+    steps: [
+      { label: "资料接收", detail: "解析台账 Excel，加载 8 张现场照片...", duration: 2000 },
+      { label: "文字识别", detail: "识别标签文字、记录本内容、标识标牌...", duration: 3000 },
+      { label: "视觉分析", detail: "分析容器状态、密封情况、防渗层、标签完整性...", duration: 3500 },
+      { label: "信息融合", detail: "文字识别结果与视觉观察结果合并，交叉验证...", duration: 2000 },
+      { label: "台账联动", detail: "现场发现与台账记录交叉比对...", duration: 2500 },
+      { label: "结果输出", detail: "汇总核查发现，形成核查结果...", duration: 1500 },
+    ],
+    findings: [
+      { level: "high", code: "FS001", text: "贮存间地面存在明显裂缝，未见防渗层完好记录，不满足《危险废物贮存污染控制标准》防渗要求。" },
+      { level: "high", code: "FV001", text: "标签严重褪色模糊，无法辨识危废种类与代码，不满足标识要求。" },
+      { level: "medium", code: "FL002", text: "现场标签标注的危废代码与台账记录不一致，存在标签信息与管理记录脱节风险。" },
+      { level: "medium", code: "FV003", text: "液态危废容器未加盖密封，存在挥发与泄漏风险。" },
+      { level: "low", code: "FR001", text: "贮存间入口未张贴危险废物识别标志，不满足规范化管理指标要求。" },
+      { level: "low", code: "FR002", text: "现场记录本最后填写日期距今已超2个月，与台账更新频率不一致。" },
+    ],
+    summary: { total: 6, high: 2, medium: 2, low: 2, duration: "45 秒" },
+  },
+];
+
+/* ═══════════════════════════════════════════════════════════
+   SHARED
+   ═══════════════════════════════════════════════════════════ */
+
+function LogoMark({ className = "h-8 w-8" }: { className?: string }) {
   return (
     <svg viewBox="0 0 64 64" className={className} fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="YIDIAN CST logo">
       <circle cx="32" cy="32" r="9" fill="currentColor" />
@@ -47,271 +205,570 @@ function LogoMark({ className = "h-8 w-8" }) {
   );
 }
 
-function BrandBlock() {
-  return (
-    <div className="flex items-center gap-3">
-      <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-emerald-200 bg-white text-emerald-900 shadow-sm">
-        <LogoMark className="h-8 w-8" />
-      </div>
-      <div>
-        <div className="text-xs tracking-[0.24em] text-emerald-700 uppercase">YIDIAN CST</div>
-        <div className="font-semibold text-emerald-950">广州市亿点环保有限公司</div>
-      </div>
-    </div>
-  );
-}
-
-function SectionTitle({ eyebrow, title, desc }: { eyebrow: string; title: string; desc: string }) {
-  return (
-    <div className="max-w-3xl">
-      <div className="text-sm font-semibold tracking-[0.2em] text-emerald-700 uppercase">{eyebrow}</div>
-      <h2 className="mt-3 text-3xl md:text-4xl font-bold text-emerald-950">{title}</h2>
-      <p className="mt-4 text-base md:text-lg text-emerald-900/80 leading-8">{desc}</p>
-    </div>
-  );
-}
-
-const services = [
-  { icon: FileCheck2, title: "环保管家与合规咨询", desc: "围绕企业日常环保管理、排污许可、资料规范化和监管应对，提供持续性顾问支持。" },
-  { icon: Factory, title: "建设项目环保服务", desc: "涵盖建设项目环境影响评价、三废污染防治工程配套咨询、应急预案与竣工验收支撑。" },
-  { icon: Recycle, title: "危废与固废管理", desc: "围绕危险废物管理台账、贮存规范、转移资料、合规审查与风险提示提供数字化支持。" },
-  { icon: Leaf, title: "VOCs与清洁生产", desc: "提供 VOCs 治理咨询、清洁生产审核与绿色制造体系建设服务。" },
-  { icon: BarChart3, title: "双碳与绿色转型", desc: "支持碳达峰、碳中和相关咨询，协助企业开展绿色低碳能力建设。" },
-  { icon: ShieldCheck, title: "政府专项资金申报", desc: "协助企业梳理申报条件、材料与项目逻辑，提升环保专项资金申报效率。" },
-];
-
-const advantages = [
-  "管理智能体定位：当前重点产品不是平台，而是面向危险废物管理场景的管理智能体。",
-  "广东监管场景导向：突出广东省监管语境下的资料审查、依据提示与风险识别能力。",
-  "差异化方向明确：不重复平台已有基础台账/联单功能，重点做跨环保资料一致性比对。",
-  "路线清晰：V1 台账智能审查 → V1.5 跨资料一致性比对 → V2 规范化管理智能辅助版 → V3 全过程危险废物管理智能体。",
-];
-
-const cases = [
-  { title: "四会市无废县技术服务项目", desc: "围绕无废城市建设相关任务，提供项目技术支撑与实施协同服务。" },
-  { title: "肇庆端州无废社区项目", desc: "围绕社区层面的无废场景建设，提供策划、内容梳理与项目推进支持。" },
-  { title: "肇庆广宁低碳示范项目", desc: "聚焦低碳示范方向，服务绿色转型与区域示范建设相关工作。" },
-];
-
-const products = [
-  { icon: Cpu, title: "危险废物管理智能体", desc: "项目定位为管理智能体，而非平台。面向广东监管与企业合规场景，围绕危险废物资料审查、风险提示和管理辅助提供智能化支持。" },
-  { icon: Database, title: "环保数字化工具", desc: "围绕台账标准化、问题字典、规则库与数据结构沉淀，形成企业环保管理数字底座。" },
-  { icon: BadgeCheck, title: "跨资料一致性审查能力", desc: "聚焦危险废物资料与环评、排污许可及其他环保申报材料之间的一致性比对与依据提示。" },
-];
-
-const roadmap = [
-  { version: "V1", title: "台账智能审查", desc: "实际运行输入以企业原始台账 Excel / CSV 为主。" },
-  { version: "V1.5", title: "跨资料一致性比对", desc: "面向危废资料与环评、排污许可及其他申报材料的一致性审查。" },
-  { version: "V2", title: "规范化管理智能辅助版", desc: "支持规范化管理、自检抽查与资料完善辅助。" },
-  { version: "V3", title: "全过程危险废物管理智能体", desc: "形成全过程、持续迭代的危险废物管理智能体。" },
-];
-
-const quickQuestions = [
-  "帮我检查这份危废台账是否存在常见规范问题",
-  "结合台账与排污许可，帮我提示可能存在的一致性问题",
-  "根据台账字段，帮我列出需要重点复核的异常项",
-  "这个项目后续路线从 V1 到 V3 分别是什么",
-];
-
-const sceneCards = [
-  { title: "V1 台账智能审查", desc: "聚焦企业原始台账 Excel / CSV 的字段检查、逻辑复核与问题提示。", icon: FileSpreadsheet },
-  { title: "V1.5 跨资料一致性比对", desc: "面向危险废物资料与环评、排污许可及其他环保申报材料之间的一致性比对。", icon: ShieldAlert },
-  { title: "V2 规范化管理智能辅助", desc: "聚焦危险废物规范化管理的智能辅助、抽查自检与资料完善支持。", icon: ClipboardList },
-  { title: "V3 全过程管理智能体", desc: "面向危险废物全过程管理，形成持续迭代的管理智能体能力。", icon: MessageSquare },
-];
-
-const suggestedFindings = [
-  "部分台账记录缺少危废代码或名称表达不统一，建议统一字段口径后再复核。",
-  "个别记录与环评、排污许可申报口径可能存在不一致，建议开展跨资料一致性复核。",
-  "部分数据可能存在计量单位、产生环节或管理去向表达不一致情况，建议统一口径后再汇总分析。",
-];
-
-const chatSeed: { role: string; text: string }[] = [
-  { role: "assistant", text: "您好，这里是危险废物管理智能体演示窗口。您可以上传企业原始台账 Excel / CSV，或直接输入问题进行演示。" },
-  { role: "assistant", text: "本系统定位于管理智能体，聚焦监管辅助、风险提示、规范化审查与跨资料一致性比对；不对违法违规定性，也不输出处罚建议。" },
-];
+/* ═══════════════════════════════════════════════════════════
+   NAVIGATION
+   ═══════════════════════════════════════════════════════════ */
 
 function TopNav({ page, setPage }: { page: string; setPage: (p: string) => void }) {
-  const items: [string, string][] = [
-    ["home", "首页"],
-    ["about", "关于我们"],
-    ["services", "服务领域"],
-    ["cases", "项目案例"],
-    ["products", "数字产品"],
-    ["contact", "联系我们"],
-  ];
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => {
+      const s = window.scrollY > 50;
+      setScrolled(prev => prev === s ? prev : s);
+    };
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const items = navItems;
+
+  const bg = scrolled || menuOpen
+    ? "bg-white/90 backdrop-blur-xl border-b border-emerald-100 shadow-sm"
+    : "bg-transparent";
+
+  const navigateTo = (p: string) => { setPage(p); setMenuOpen(false); };
 
   return (
-    <header className="sticky top-0 z-50 border-b border-emerald-100 bg-white/95 backdrop-blur">
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-4">
-        <button onClick={() => setPage("home")} className="text-left">
-          <BrandBlock />
+    <header className={`fixed top-0 z-50 w-full transition-all duration-500 ${bg}`}>
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+        <button onClick={() => navigateTo("home")} className="flex items-center gap-3 text-emerald-900">
+          <LogoMark className="h-7 w-7" />
+          <div>
+            <div className="text-[10px] tracking-[0.3em] uppercase text-emerald-600">YIDIAN CST</div>
+            <div className="text-sm font-semibold">亿点环保</div>
+          </div>
         </button>
-        <nav className="hidden flex-wrap items-center gap-6 md:flex">
+        <nav className="hidden items-center gap-6 lg:flex">
           {items.map(([key, label]) => (
-            <button
-              key={key}
-              onClick={() => setPage(key)}
-              className={`text-sm transition ${page === key ? "font-semibold text-emerald-950" : "text-emerald-800 hover:text-emerald-950"}`}
-            >
+            <button key={key} onClick={() => navigateTo(key)}
+              className={`text-sm transition-colors duration-200 ${
+                page === key ? "font-semibold text-emerald-900" : "text-emerald-700/60 hover:text-emerald-900"
+              }`}>
               {label}
             </button>
           ))}
         </nav>
-        <Button onClick={() => setPage("demoLogin")} className="rounded-2xl bg-emerald-800 hover:bg-emerald-900">
-          演示登录
-        </Button>
+        <div className="flex items-center gap-3">
+          <button onClick={() => navigateTo("demo")}
+            className="hidden sm:block rounded-full bg-gradient-to-r from-emerald-700 to-teal-600 px-5 py-2 text-sm font-medium text-white transition hover:from-emerald-800 hover:to-teal-700">
+            立即体验
+          </button>
+          {/* Mobile hamburger */}
+          <button onClick={() => setMenuOpen(!menuOpen)} aria-label={menuOpen ? "关闭菜单" : "打开菜单"} className="lg:hidden flex flex-col gap-1.5 p-1">
+            <span className={`block h-0.5 w-5 bg-emerald-800 transition-transform ${menuOpen ? "rotate-45 translate-y-2" : ""}`} />
+            <span className={`block h-0.5 w-5 bg-emerald-800 transition-opacity ${menuOpen ? "opacity-0" : ""}`} />
+            <span className={`block h-0.5 w-5 bg-emerald-800 transition-transform ${menuOpen ? "-rotate-45 -translate-y-2" : ""}`} />
+          </button>
+        </div>
       </div>
+      {/* Mobile menu */}
+      {menuOpen && (
+        <div className="lg:hidden border-t border-emerald-100 bg-white px-6 py-4 space-y-1">
+          {items.map(([key, label]) => (
+            <button key={key} onClick={() => navigateTo(key)}
+              className={`block w-full text-left py-2.5 text-sm transition ${
+                page === key ? "font-semibold text-emerald-900" : "text-emerald-700/60"
+              }`}>
+              {label}
+            </button>
+          ))}
+          <button onClick={() => navigateTo("demo")}
+            className="mt-2 block w-full text-center rounded-full bg-gradient-to-r from-emerald-700 to-teal-600 py-2.5 text-sm font-medium text-white">
+            立即体验
+          </button>
+        </div>
+      )}
     </header>
   );
 }
 
+/* ── Count-up animation hook ── */
+function useCountUp(end: number, duration = 1500, startOnView = true) {
+  const [count, setCount] = useState(0);
+  const [started, setStarted] = useState(!startOnView);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!startOnView || !ref.current) return;
+    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setStarted(true); obs.disconnect(); } }, { threshold: 0.3 });
+    obs.observe(ref.current);
+    return () => obs.disconnect();
+  }, [startOnView]);
+
+  useEffect(() => {
+    if (!started) return;
+    let rafId: number;
+    const start = performance.now();
+    const step = (now: number) => {
+      const progress = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setCount(Math.round(eased * end));
+      if (progress < 1) rafId = requestAnimationFrame(step);
+    };
+    rafId = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(rafId);
+  }, [started, end, duration]);
+
+  return { count, ref };
+}
+
+function CountUpStat({ num, suffix, label }: { num: number; suffix: string; label: string }) {
+  const { count, ref } = useCountUp(num, 1800);
+  return (
+    <div ref={ref}>
+      <div className="text-3xl font-bold text-emerald-800 md:text-4xl">{count}{suffix}</div>
+      <div className="mt-1 text-xs text-emerald-700/40">{label}</div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════
+   HOME PAGE
+   ═══════════════════════════════════════════════════════════ */
+
 function HomePage({ setPage }: { setPage: (p: string) => void }) {
   return (
     <div>
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-emerald-50 via-white to-emerald-100" />
-        <div className="relative mx-auto grid max-w-7xl gap-10 px-6 py-20 md:grid-cols-2 md:py-28">
-          <div className="flex flex-col justify-center">
-            <div className="inline-flex w-fit items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm text-emerald-800 shadow-sm">
-              <BadgeCheck className="h-4 w-4" />
-              环保咨询 × 数字化产品 × 危险废物管理智能体
-            </div>
-            <div className="mt-6">
-              <h1 className="text-4xl font-bold tracking-tight text-emerald-950 md:text-6xl md:leading-[1.1]">
-                用专业环保服务与数字能力，
-              </h1>
-              <p className="mt-3 text-base italic tracking-wide text-emerald-700 md:text-lg">
-                Professional environmental services and digital capability.
-              </p>
-              <h1 className="mt-4 text-4xl font-bold tracking-tight text-emerald-950 md:text-6xl md:leading-[1.1]">
-                帮助企业稳健合规发展
-              </h1>
-              <p className="mt-3 text-base italic tracking-wide text-emerald-700 md:text-lg">
-                Helping enterprises achieve steady, compliant, and sustainable growth.
-              </p>
-            </div>
-            <p className="mt-6 max-w-2xl text-base leading-8 text-emerald-900/80 md:text-lg">
-              广州市亿点环保有限公司专注于环保管家咨询、政府环保专项资金申请、建设项目环境影响评价、三废污染防治工程、排污许可申报维护、清洁生产审核、VOCs 治理咨询、绿色制造体系建设与双碳相关服务，同时持续推进危险废物管理场景的数字化产品建设。
+      {/* ── Hero ── */}
+      <section className="relative min-h-screen overflow-hidden bg-gradient-to-b from-emerald-50/80 via-white to-white">
+        <div className="pointer-events-none absolute -top-32 left-1/4 h-[500px] w-[500px] rounded-full bg-emerald-300/30 blur-[100px]" />
+        <div className="pointer-events-none absolute top-20 right-1/4 h-[400px] w-[400px] rounded-full bg-sky-200/20 blur-[120px]" />
+        <div className="pointer-events-none absolute top-1/3 left-1/2 -translate-x-1/2 h-[300px] w-[300px] rounded-full bg-teal-300/20 blur-[80px]" />
+        <div className="pointer-events-none absolute inset-0 opacity-40"
+          style={{ backgroundImage: `radial-gradient(circle, #d1fae5 1px, transparent 1px)`, backgroundSize: "32px 32px" }} />
+        <div className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 h-[500px] w-[800px] rounded-full bg-emerald-200/40 blur-[120px]" />
+
+        <div className="relative mx-auto flex min-h-[calc(100vh-2rem)] max-w-7xl flex-col items-center justify-center px-6 pt-24 pb-8 md:min-h-screen md:pt-20 md:pb-0">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-white px-5 py-2.5 text-sm text-emerald-700 shadow-sm"
+          >
+            <BadgeCheck className="h-4 w-4 text-emerald-500" />
+            已服务 500+ 企业 · 环保咨询 · 危废管理智能体
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="mt-8 max-w-4xl text-center"
+          >
+            <h1 className="font-display text-5xl font-bold leading-tight text-emerald-950 md:text-7xl lg:text-8xl">
+              <span className="bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent">
+                知微
+              </span>
+              <span className="ml-2 text-lg font-normal tracking-[0.15em] text-emerald-600/40 md:ml-3 md:text-2xl align-middle">
+                Zhīwēi
+              </span>
+            </h1>
+            <p className="mt-4 text-lg text-emerald-800/50 md:text-xl tracking-wide">
+              知微知彰，知柔知刚 —— 《易经·系辞》
             </p>
-            <div className="mt-8 flex flex-wrap gap-4">
-              <Button size="lg" className="rounded-2xl bg-emerald-800 hover:bg-emerald-900" onClick={() => setPage("products")}>
-                了解管理智能体
-                <ChevronRight className="ml-2 h-4 w-4" />
-              </Button>
-              <Button size="lg" variant="outline" className="rounded-2xl border-emerald-300 text-emerald-900 hover:bg-emerald-50" onClick={() => setPage("services")}>
-                查看服务方案
-              </Button>
+          </motion.div>
+
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.5 }}
+            className="mt-8 text-center text-base leading-8 text-emerald-900/70 md:text-lg whitespace-nowrap"
+          >
+            见微知著的管理智能体——从危废合规审查与鉴别复核开始，在复杂数据中洞察每一处关键偏差
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.8 }}
+            className="mt-8 flex flex-wrap justify-center gap-4"
+          >
+            <button onClick={() => setPage("zhiwei")}
+              className="flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald-700 to-teal-600 px-8 py-3.5 font-medium text-white shadow-lg shadow-teal-700/20 transition hover:from-emerald-800 hover:to-teal-700">
+              了解知微 <ChevronRight className="h-4 w-4" />
+            </button>
+            <button onClick={() => setPage("demo")}
+              className="flex items-center gap-2 rounded-full border border-emerald-200 bg-white px-8 py-3.5 font-medium text-emerald-800 transition hover:bg-emerald-50">
+              <Play className="h-4 w-4" /> 观看演示
+            </button>
+          </motion.div>
+
+          {/* Product mockup */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 1.1 }}
+            className="mt-16 w-full max-w-5xl"
+          >
+            <div className="rounded-2xl border border-emerald-200 bg-white p-1.5 shadow-2xl shadow-emerald-200/30">
+              <div className="flex items-center gap-2 rounded-t-xl bg-emerald-50 px-4 py-3">
+                <div className="flex gap-1.5">
+                  <div className="h-3 w-3 rounded-full bg-red-400" />
+                  <div className="h-3 w-3 rounded-full bg-amber-400" />
+                  <div className="h-3 w-3 rounded-full bg-green-400" />
+                </div>
+                <div className="mx-auto rounded-lg bg-white px-4 py-1 text-xs text-emerald-600 border border-emerald-100">
+                  trial.yidiancst.ai — 知微 · 管理智能体
+                </div>
+              </div>
+              <div className="rounded-b-xl bg-gradient-to-b from-emerald-50/50 to-white p-4 md:p-8">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-4">
+                  <div className="rounded-xl border border-emerald-100 bg-white p-4 shadow-sm">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="flex h-7 w-7 items-center justify-center rounded-md bg-emerald-100 text-emerald-600"><FileText className="h-3.5 w-3.5" /></div>
+                      <div className="text-xs font-semibold text-emerald-950 md:text-[11px]">资料审查</div>
+                    </div>
+                    <div className="h-1.5 w-full rounded-full bg-emerald-100"><div className="h-1.5 w-[95%] rounded-full bg-emerald-500" /></div>
+                    <div className="mt-1.5 text-xs text-emerald-600 md:text-[10px]">156 条记录 · 5 项发现</div>
+                  </div>
+                  <div className="rounded-xl border border-emerald-100 bg-white p-4 shadow-sm">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="flex h-7 w-7 items-center justify-center rounded-md bg-teal-100 text-teal-600"><ShieldAlert className="h-3.5 w-3.5" /></div>
+                      <div className="text-xs font-semibold text-emerald-950 md:text-[11px]">跨资料比对</div>
+                    </div>
+                    <div className="flex gap-1">
+                      <span className="rounded bg-red-50 px-1.5 py-0.5 text-xs text-red-600 font-medium md:text-[10px]">高 3</span>
+                      <span className="rounded bg-amber-50 px-1.5 py-0.5 text-xs text-amber-600 font-medium md:text-[10px]">中 2</span>
+                    </div>
+                    <div className="mt-1.5 text-xs text-emerald-600 md:text-[10px]">台账 × 许可 × 环评</div>
+                  </div>
+                  <div className="rounded-xl border border-emerald-100 bg-white p-4 shadow-sm">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="flex h-7 w-7 items-center justify-center rounded-md bg-emerald-100 text-emerald-600"><Search className="h-3.5 w-3.5" /></div>
+                      <div className="text-xs font-semibold text-emerald-950 md:text-[11px]">鉴别复核</div>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-xs text-emerald-600 md:text-[10px]">问题树 8 棵</span>
+                      <span className="text-emerald-300">·</span>
+                      <span className="text-xs text-emerald-600 md:text-[10px]">证据链追溯</span>
+                    </div>
+                    <div className="mt-1.5 text-xs text-emerald-600 md:text-[10px]">专家初审辅助</div>
+                  </div>
+                  <div className="rounded-xl border border-emerald-100 bg-white p-4 shadow-sm">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="flex h-7 w-7 items-center justify-center rounded-md bg-emerald-100 text-emerald-600"><Camera className="h-3.5 w-3.5" /></div>
+                      <div className="text-xs font-semibold text-emerald-950 md:text-[11px]">现场核查</div>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <Eye className="h-2.5 w-2.5 text-emerald-500" />
+                      <span className="text-xs text-emerald-600 md:text-[10px]">OCR + 视觉双通道</span>
+                    </div>
+                    <div className="mt-1.5 text-xs text-emerald-600 md:text-[10px]">8 张照片 · 6 项发现</div>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-
-          <div className="grid gap-4">
-            <Card className="rounded-[28px] border-emerald-100 shadow-xl shadow-emerald-100/60">
-              <CardContent className="p-6 md:p-8">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="text-sm text-emerald-700">核心产品演示</div>
-                    <div className="mt-1 text-2xl font-semibold text-emerald-950">危险废物管理智能体</div>
-                    <div className="mt-1 text-sm text-emerald-700">广东监管场景导向 · 管理智能体定位</div>
-                  </div>
-                  <div className="rounded-2xl bg-emerald-800 p-3 text-white">
-                    <Cpu className="h-6 w-6" />
-                  </div>
-                </div>
-                <div className="mt-6 rounded-3xl border border-emerald-100 bg-emerald-50/50 p-5">
-                  <div className="text-sm text-emerald-700">当前输入</div>
-                  <div className="mt-2 font-medium text-emerald-950">企业原始台账 Excel / CSV</div>
-                  <div className="mt-1 text-sm text-emerald-700">V1 实际运行输入以企业原始台账为主</div>
-                  <div className="mt-4 text-sm text-emerald-700">能力边界</div>
-                  <div className="mt-2 text-sm leading-7 text-emerald-900/85">
-                    管理智能体定位，聚焦监管辅助、风险提示、规范化审查与资料一致性审查；不做违法违规定性，不输出处罚建议。
-                  </div>
-                </div>
-                <div className="mt-4 grid gap-3 md:grid-cols-2">
-                  <div className="rounded-2xl border border-emerald-100 p-4">
-                    <div className="text-sm text-emerald-700">路线阶段</div>
-                    <div className="mt-2 font-medium text-emerald-950">V1 台账智能审查</div>
-                  </div>
-                  <div className="rounded-2xl border border-emerald-100 p-4">
-                    <div className="text-sm text-emerald-700">路线阶段</div>
-                    <div className="mt-2 font-medium text-emerald-950">V1.5 跨资料一致性比对</div>
-                  </div>
-                </div>
-                <Button onClick={() => setPage("demoLogin")} className="mt-5 rounded-2xl bg-emerald-800 hover:bg-emerald-900">
-                  进入演示入口
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
+          </motion.div>
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-6 py-20">
-        <SectionTitle
-          eyebrow="ABOUT"
-          title="以专业环保服务与数字化能力，帮助企业实现稳健合规与绿色转型"
-          desc="广州市亿点环保有限公司聚焦环保管家咨询、政府环保专项资金申请、建设项目环境影响评价、三废污染防治工程、排污许可申报维护、清洁生产审核、VOCs 治理咨询、绿色制造体系建设及双碳相关服务，同时持续推进危险废物管理场景的数字化产品建设。"
-        />
-        <div className="mt-10 grid gap-6 md:grid-cols-2">
-          {advantages.map((item, idx) => (
-            <Card key={idx} className="rounded-[24px] border-emerald-100">
-              <CardContent className="p-6">
-                <div className="flex items-start gap-4">
-                  <div className="mt-1 rounded-2xl bg-emerald-800 p-2 text-white">
-                    <BadgeCheck className="h-4 w-4" />
-                  </div>
-                  <p className="text-emerald-900/85 leading-8">{item}</p>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </section>
-    </div>
-  );
-}
-
-function AboutPage() {
-  return (
-    <div className="mx-auto max-w-7xl px-6 py-20">
-      <SectionTitle
-        eyebrow="ABOUT US"
-        title="关于亿点环保"
-        desc="广州市亿点环保有限公司致力于为企业提供专业环保咨询与数字化解决方案，围绕企业合规管理、绿色制造与危险废物管理场景数字化，提供更稳健、更规范、更高效的环保管理支持。"
-      />
-      <div className="mt-12 grid gap-6 md:grid-cols-2">
-        {advantages.map((item, idx) => (
-          <Card key={idx} className="rounded-[24px] border-emerald-100 bg-white">
-            <CardContent className="p-6 text-emerald-900/85 leading-8">{item}</CardContent>
-          </Card>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function ServicesPage() {
-  return (
-    <div className="bg-emerald-50/40 py-20">
-      <div className="mx-auto max-w-7xl px-6">
-        <SectionTitle
-          eyebrow="SERVICES"
-          title="核心服务领域"
-          desc="从传统环保咨询到数字化合规能力建设，构建服务与产品协同的业务体系。"
-        />
-        <div className="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {services.map((item) => {
-            const Icon = item.icon;
-            return (
-              <Card key={item.title} className="h-full rounded-[24px] border-emerald-100 bg-white">
-                <CardContent className="p-6">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-800 text-white">
+      {/* ── 核心优势 ── */}
+      <section className="border-t border-emerald-100 bg-white py-24 md:py-32">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="text-center mb-16">
+            <div className="text-xs font-medium tracking-[0.25em] uppercase text-emerald-500">优势 · Strengths</div>
+            <h2 className="font-display mt-3 text-3xl font-bold text-emerald-950 md:text-4xl">知微的核心优势</h2>
+            <p className="mt-4 text-sm text-emerald-800/50">不只是看见资料，而是看懂问题</p>
+          </div>
+          <div className="grid gap-6 md:grid-cols-4">
+            {[
+              { icon: FileSearch, title: "多源交叉审查", desc: "台账、环评、许可证多源资料交叉比对" },
+              { icon: Layers, title: "专家逻辑研判", desc: "按资深固废专家思路组织问题，识别套码、混码、旧码惯性等实质风险" },
+              { icon: ClipboardCheck, title: "证据链自动组织", desc: "自动关联资料依据、支撑证据、反证说明与可信性判断" },
+              { icon: Shield, title: "全程本地可控", desc: "核心模型与敏感资料全程留在本地环境" },
+            ].map((item, idx) => {
+              const Icon = item.icon;
+              return (
+                <motion.div key={item.title}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: idx * 0.1 }}
+                  viewport={{ once: true }}
+                  className="rounded-xl border border-emerald-100 p-5 text-center transition hover:border-emerald-200 hover:shadow-md">
+                  <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 mb-4">
                     <Icon className="h-5 w-5" />
                   </div>
-                  <h3 className="mt-5 text-xl font-semibold text-emerald-950">{item.title}</h3>
-                  <p className="mt-3 text-sm leading-7 text-emerald-900/80">{item.desc}</p>
-                </CardContent>
-              </Card>
+                  <h3 className="text-sm font-semibold text-emerald-950">{item.title}</h3>
+                  <p className="mt-1.5 text-xs leading-5 text-emerald-800/50">{item.desc}</p>
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ── 知微产品 + 路线图 ── */}
+      <section className="border-t border-emerald-100 bg-emerald-50/40 py-24 md:py-32">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="grid items-center gap-16 md:grid-cols-2">
+            <div>
+              <div className="text-xs font-medium tracking-[0.25em] uppercase text-emerald-500">知微 · Zhīwēi</div>
+              <h2 className="font-display mt-3 text-3xl font-bold text-emerald-950 md:text-4xl">
+                知微管理智能体
+              </h2>
+              <p className="mt-4 text-base leading-8 text-emerald-800/50">
+                从危废合规审查到鉴别复核，在海量资料中洞察细微偏差。管理智能体定位，聚焦风险提示与规范化审查。
+              </p>
+              <div className="mt-8 space-y-4">
+                {[
+                  { icon: Cpu, title: "危废合规智能审查", desc: "台账、排污许可、环评报告自动交叉比对，在海量资料中识别每一处不一致。" },
+                  { icon: Search, title: "危废鉴别复核", desc: "基于问题树与证据链的鉴别报告专家初审辅助，覆盖采样、检测、标准适用性等关键环节。" },
+                  { icon: Database, title: "环保数据底座", desc: "规则库、问题字典、行业知识图谱——将监管经验沉淀为可复用的数字资产。" },
+                  { icon: BadgeCheck, title: "现场核查", desc: "OCR + AI 视觉双通道，现场照片自动识别标签、容器状态并与台账联动。" },
+                ].map((p) => {
+                  const Icon = p.icon;
+                  return (
+                    <div key={p.title} className="flex items-start gap-4 rounded-xl border border-emerald-200 bg-white p-4 transition hover:shadow-sm">
+                      <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 flex-shrink-0">
+                        <Icon className="h-4 w-4" />
+                      </div>
+                      <div>
+                        <div className="text-sm font-semibold text-emerald-950">{p.title}</div>
+                        <div className="mt-1 text-xs leading-6 text-emerald-800/50">{p.desc}</div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              <button onClick={() => setPage("demo")}
+                className="mt-8 flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald-700 to-teal-600 px-6 py-2.5 text-sm font-medium text-white transition hover:from-emerald-800 hover:to-teal-700">
+                <Play className="h-4 w-4" /> 体验产品演示
+              </button>
+            </div>
+            {/* Right: Roadmap — 并排四框 */}
+            <div className="grid grid-cols-2 gap-4">
+              {[
+                { version: "V1", title: "台账智能审查", status: "done" },
+                { version: "V1.5", title: "跨资料一致性比对", status: "done" },
+                { version: "V2", title: "现场核查 + 鉴别复核", status: "progress" },
+                { version: "V3", title: "全过程管理智能体", status: "next" },
+              ].map((item, idx) => (
+                <motion.div
+                  key={item.version}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: idx * 0.1 }}
+                  viewport={{ once: true }}
+                  className="rounded-xl border border-emerald-200 bg-white p-5 transition hover:shadow-sm"
+                >
+                  <div className={`flex h-10 w-10 items-center justify-center rounded-lg text-sm font-bold ${
+                    item.status === "done"
+                      ? "bg-gradient-to-br from-emerald-700 to-teal-600 text-white"
+                      : item.status === "progress"
+                      ? "bg-gradient-to-br from-teal-500 to-emerald-500 text-white"
+                      : "bg-gradient-to-br from-teal-400 to-sky-400 text-white"
+                  }`}>{item.version}</div>
+                  <div className="mt-3 flex items-center gap-2">
+                    <span className="text-sm font-semibold text-emerald-950">{item.title}</span>
+                  </div>
+                  <div className="mt-1">
+                    {item.status === "done" && <span className="text-[10px] text-emerald-500 bg-emerald-50 rounded-full px-2 py-0.5">已上线</span>}
+                    {item.status === "progress" && <span className="text-[10px] text-teal-600 bg-teal-50 rounded-full px-2 py-0.5">完善中</span>}
+                    {item.status === "next" && <span className="text-[10px] text-white bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full px-2 py-0.5">Next</span>}
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── 服务 ── */}
+      <section className="border-t border-emerald-100 bg-emerald-50/40 py-24 md:py-32">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="text-center mb-16">
+            <div className="text-xs font-medium tracking-[0.25em] uppercase text-emerald-500">服务 · Services</div>
+            <h2 className="font-display mt-3 text-3xl font-bold text-emerald-950 md:text-4xl">核心服务领域</h2>
+          </div>
+          <div className="grid gap-x-8 gap-y-8 md:gap-y-12 md:grid-cols-2 lg:grid-cols-3">
+            {services.slice(0, 6).map((item) => {
+              const Icon = item.icon;
+              return (
+                <div key={item.title} className="group">
+                  <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 transition group-hover:bg-emerald-100">
+                    <Icon className="h-5 w-5" />
+                  </div>
+                  <h3 className="text-base font-semibold text-emerald-950">{item.title}</h3>
+                  <p className="mt-2 text-sm leading-7 text-emerald-800/50">{item.desc}</p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Stats ── */}
+      <section className="border-t border-emerald-100 bg-white py-16">
+        <div className="mx-auto max-w-5xl px-6">
+          <div className="grid grid-cols-2 gap-8 md:grid-cols-4 text-center">
+            <CountUpStat num={500} suffix="+" label="服务企业" />
+            <CountUpStat num={8} suffix="" label="年行业深耕" />
+            <CountUpStat num={4} suffix="" label="知微产品版本" />
+            <CountUpStat num={7500} suffix="+" label="AI 训练样本" />
+          </div>
+        </div>
+      </section>
+
+      {/* ── 案例 ── */}
+      <section className="border-t border-emerald-100 bg-emerald-50/40 py-24 md:py-32">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="text-center mb-16">
+            <div className="text-xs font-medium tracking-[0.25em] uppercase text-emerald-500">案例 · Cases</div>
+            <h2 className="font-display mt-3 text-3xl font-bold text-emerald-950 md:text-4xl">代表项目</h2>
+          </div>
+          <div className="grid gap-8 md:grid-cols-3">
+            {professionalCases.map((item, idx) => (
+              <motion.div
+                key={item.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: idx * 0.1 }}
+                viewport={{ once: true }}
+                className="group rounded-xl border border-emerald-100 bg-white p-6 transition hover:border-emerald-200 hover:shadow-md"
+              >
+                <div className="flex flex-wrap gap-1.5 mb-3">
+                  {item.tags.map((tag) => (
+                    <span key={tag} className="rounded-full bg-emerald-50 px-2.5 py-0.5 text-[10px] font-medium text-emerald-600">{tag}</span>
+                  ))}
+                </div>
+                <h3 className="text-base font-semibold text-emerald-950">{item.title}</h3>
+                <p className="mt-2 text-sm leading-7 text-emerald-800/50">{item.desc}</p>
+                <div className="mt-4 flex gap-4 border-t border-emerald-50 pt-4">
+                  {item.metrics.map((m) => (
+                    <div key={m.label}>
+                      <div className="text-lg font-bold text-emerald-700">{m.value}<span className="text-xs font-normal text-emerald-500">{m.unit}</span></div>
+                      <div className="text-[10px] text-emerald-600/50">{m.label}</div>
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── 关于 ── */}
+      <section className="border-t border-emerald-100 bg-white py-20 md:py-24">
+        <div className="mx-auto max-w-3xl px-6 text-center">
+          <div className="text-xs font-medium tracking-[0.25em] uppercase text-emerald-500">关于 · About</div>
+          <h2 className="font-display mt-3 text-2xl font-bold text-emerald-950 md:text-3xl">广州市亿点环保有限公司</h2>
+          <p className="mt-5 text-sm leading-8 text-emerald-800/50">
+            亿点环保深耕环保咨询领域，服务覆盖环保管家、建设项目环评、危废全过程管理、清洁生产与双碳转型。
+            我们相信，环保合规不应只靠经验判断——「知微」智能体将监管经验与 AI 能力融合，
+            从台账审查、跨资料比对到鉴别复核，帮助企业在复杂的合规环境中看清每一处细节。
+          </p>
+        </div>
+      </section>
+
+      {/* ── CTA ── */}
+      <section className="border-t border-emerald-100 bg-emerald-50/40 py-24 md:py-28">
+        <div className="mx-auto max-w-2xl px-6 text-center">
+          <h2 className="font-display text-2xl font-bold text-emerald-950 md:text-4xl leading-tight">
+            让知微为您洞察合规细节
+          </h2>
+          <p className="mt-4 text-sm text-emerald-800/50">
+            交流环保咨询、项目合作与知微智能体演示需求，我们随时准备好。
+          </p>
+          <div className="mt-8 flex flex-wrap justify-center gap-4">
+            <button onClick={() => setPage("contact")}
+              className={`${btnPrimary} px-7 py-2.5`}>
+              联系我们
+            </button>
+            <button onClick={() => setPage("demo")}
+              className={`${btnSecondary} px-7 py-2.5`}>
+              产品演示
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ABOUT PAGE
+   ═══════════════════════════════════════════════════════════ */
+
+function AboutPage() {
+
+  return (
+    <div className="min-h-screen bg-white pt-28 pb-20">
+      <div className="mx-auto max-w-7xl px-6">
+        <div className="text-xs font-medium tracking-[0.25em] uppercase text-emerald-600">关于 · About</div>
+        <h2 className="font-display mt-4 text-3xl font-bold text-emerald-950 md:text-5xl">关于我们</h2>
+        <p className="mt-6 max-w-3xl text-base leading-8 text-emerald-800/60">
+          广州市亿点环保有限公司专注于环保咨询服务与环保数字化能力建设，致力于以专业技术经验和智能审查工具，服务企业环保合规管理与复杂资料审查场景。
+        </p>
+
+        {/* 我们的定位 */}
+        <div className="mt-16">
+          <h3 className="text-2xl font-bold text-emerald-950">我们的定位</h3>
+          <p className="mt-4 max-w-3xl text-sm leading-8 text-emerald-800/60">
+            亿点环保立足环保专业服务，同时持续推进危险废物管理场景的数字化能力建设。
+            我们关注的不只是资料是否齐全，更关注资料能否支撑判断、问题能否追溯依据、审查结果能否被复核。
+            知微正是在这一思路下形成的专业智能审查产品。
+          </p>
+        </div>
+
+        {/* 我们的能力 */}
+        <div className="mt-12">
+          <h3 className="text-2xl font-bold text-emerald-950">我们的能力</h3>
+          <p className="mt-4 max-w-3xl text-sm leading-8 text-emerald-800/60">
+            公司拥有环境影响评价、排污许可、危废管理、清洁生产等领域的咨询经验，
+            在此基础上，将规则体系、专业审查经验与智能识别能力结合，逐步形成知微这一面向危险废物资料审查与鉴别复核辅助场景的智能产品。
+          </p>
+          <div className="mt-8 grid grid-cols-2 gap-6 md:grid-cols-4">
+            {[
+              "多领域环保咨询经验",
+              "危废资料审查能力持续沉淀",
+              "知微智能体持续迭代",
+              "广州总部服务珠三角",
+            ].map((item) => (
+              <div key={item} className="rounded-xl border border-emerald-200 bg-emerald-50/50 p-5 text-center">
+                <p className="text-sm font-medium text-emerald-800">{item}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* 当前产品进展 */}
+        <div className="mt-16">
+          <h3 className="text-2xl font-bold text-emerald-950">当前产品进展</h3>
+          <div className="mt-8 grid gap-6 md:grid-cols-3">
+            <div className="rounded-2xl border border-emerald-200 bg-white p-6">
+              <h4 className="text-base font-semibold text-emerald-950">主线能力持续稳定</h4>
+              <p className="mt-3 text-sm leading-7 text-emerald-800/60">
+                围绕跨资料一致性比对场景，持续打磨资料读取、字段抽取、对象对齐、问题发现与结构化输出能力。
+              </p>
+            </div>
+            <div className="rounded-2xl border border-emerald-200 bg-white p-6">
+              <h4 className="text-base font-semibold text-emerald-950">专业审查能力持续增强</h4>
+              <p className="mt-3 text-sm leading-7 text-emerald-800/60">
+                围绕鉴别复核场景，持续完善全文读取、问题树扫描、证据包构建与专家复核表达能力。
+              </p>
+            </div>
+            <div className="rounded-2xl border border-emerald-200 bg-white p-6">
+              <h4 className="text-base font-semibold text-emerald-950">部署与安全能力持续加强</h4>
+              <p className="mt-3 text-sm leading-7 text-emerald-800/60">
+                持续完善本地部署、服务端代理、访问鉴权、限流与错误脱敏等安全机制，提升演示和实际交付的可控性。
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* 公司信息 */}
+        <div className="mt-16 grid gap-6 md:grid-cols-3">
+          {contactInfo.map((item) => {
+            const Icon = item.icon;
+            return (
+              <div key={item.text} className="rounded-2xl border border-emerald-200 bg-white p-6">
+                <Icon className="h-5 w-5 text-emerald-600" />
+                <div className="mt-4 text-xs text-emerald-600">{item.label}</div>
+                <div className="mt-1 font-medium text-emerald-950">{item.text}</div>
+              </div>
             );
           })}
         </div>
@@ -320,461 +777,683 @@ function ServicesPage() {
   );
 }
 
-function CasesPage() {
+/* ═══════════════════════════════════════════════════════════
+   SUB PAGES
+   ═══════════════════════════════════════════════════════════ */
+
+function ServicesPage() {
   return (
-    <div className="mx-auto max-w-7xl px-6 py-20">
-      <SectionTitle
-        eyebrow="CASES"
-        title="代表项目"
-        desc="结合技术服务、无废建设与低碳示范等场景，持续沉淀项目经验与服务方法。"
-      />
-      <div className="mt-12 grid gap-6 md:grid-cols-3">
-        {cases.map((item) => (
-          <Card key={item.title} className="rounded-[26px] border-emerald-100 bg-white">
-            <CardContent className="p-6">
-              <div className="text-sm text-emerald-700">项目案例</div>
-              <h3 className="mt-3 text-xl font-semibold text-emerald-950">{item.title}</h3>
-              <p className="mt-3 text-sm leading-7 text-emerald-900/80">{item.desc}</p>
-            </CardContent>
-          </Card>
-        ))}
+    <div className="min-h-screen bg-white pt-28 pb-20">
+      <div className="mx-auto max-w-7xl px-6">
+        <div className="text-xs font-medium tracking-[0.25em] uppercase text-emerald-600">服务 · Services</div>
+        <h2 className="font-display mt-4 text-3xl font-bold text-emerald-950 md:text-5xl">服务范围</h2>
+        <p className="mt-4 text-base text-emerald-800/60">覆盖环保合规管理与专业技术服务的多场景支撑能力</p>
+        <p className="mt-4 max-w-3xl text-sm leading-7 text-emerald-800/50">
+          公司提供环保专业咨询服务，并可结合知微智能体能力，辅助开展危险废物资料审查、跨资料一致性核查与复核辅助。
+        </p>
+        <div className="mt-12 grid gap-4 lg:grid-cols-3">
+          {services.map((item) => {
+            const Icon = item.icon;
+            return (
+              <div key={item.title} className="rounded-2xl border border-emerald-200 bg-white p-6 transition hover:shadow-lg">
+                <Icon className="h-6 w-6 text-emerald-600" />
+                <h3 className="mt-5 text-lg font-semibold text-emerald-950">{item.title}</h3>
+                <p className="mt-3 text-sm leading-7 text-emerald-800/60">{item.desc}</p>
+              </div>
+            );
+          })}
+        </div>
+        <p className="mt-10 text-center text-sm text-emerald-700/50">
+          对涉及复杂资料链、长文本附件和多来源数据的项目，可结合知微开展前置审查与辅助核查。
+        </p>
       </div>
     </div>
   );
 }
 
-function ProductsPage({ setPage }: { setPage: (p: string) => void }) {
+function CasesPage() {
   return (
-    <div className="mx-auto max-w-7xl px-6 py-20">
-      <SectionTitle
-        eyebrow="PRODUCTS"
-        title="数字产品与智能体能力"
-        desc="围绕企业环保合规的真实工作流，将规则、数据、场景和审查能力沉淀为可复用的数字产品。"
-      />
+    <div className="min-h-screen bg-white pt-28 pb-20">
+      <div className="mx-auto max-w-7xl px-6">
+        <div className="text-xs font-medium tracking-[0.25em] uppercase text-emerald-600">案例 · Cases</div>
+        <h2 className="font-display mt-4 text-3xl font-bold text-emerald-950 md:text-5xl">项目案例</h2>
+        <p className="mt-4 text-base text-emerald-800/60">专业服务案例与产品验证案例并行展示</p>
 
-      <div className="mt-12">
-        <h3 className="text-lg font-semibold text-emerald-950">Roadmap</h3>
-        <div className="mt-6 grid gap-4 md:grid-cols-4">
-          {roadmap.map((item) => (
-            <Card key={item.version} className="rounded-[24px] border-emerald-100">
-              <CardContent className="p-5">
-                <div className="inline-flex rounded-full bg-emerald-800 px-3 py-1 text-xs font-semibold text-white">{item.version}</div>
-                <div className="mt-3 text-lg font-semibold text-emerald-950">{item.title}</div>
-                <p className="mt-2 text-sm leading-7 text-emerald-900/80">{item.desc}</p>
-              </CardContent>
-            </Card>
+        {/* 专业服务案例 */}
+        <h3 className="mt-16 text-xl font-bold text-emerald-950">专业服务案例</h3>
+        <div className="mt-8 grid gap-6 md:grid-cols-3">
+          {professionalCases.map((item) => (
+            <div key={item.title} className="rounded-2xl border border-emerald-200 bg-white p-6 transition hover:shadow-lg">
+              <div className="flex flex-wrap gap-1.5 mb-3">
+                {item.tags.map((tag) => (
+                  <span key={tag} className="rounded-full bg-emerald-50 px-2.5 py-0.5 text-[10px] font-medium text-emerald-600">{tag}</span>
+                ))}
+              </div>
+              <h4 className="mt-2 text-lg font-semibold text-emerald-950">{item.title}</h4>
+              <p className="mt-3 text-sm leading-7 text-emerald-800/60">{item.desc}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* 产品验证案例 */}
+        <h3 className="mt-16 text-xl font-bold text-emerald-950">产品验证案例</h3>
+        <div className="mt-8 grid gap-6 md:grid-cols-3">
+          {productCases.map((item) => (
+            <div key={item.title} className="rounded-2xl border border-emerald-200 bg-white p-6 transition hover:shadow-lg">
+              <div className="flex flex-wrap gap-1.5 mb-3">
+                {item.tags.map((tag) => (
+                  <span key={tag} className="rounded-full bg-teal-50 px-2.5 py-0.5 text-[10px] font-medium text-teal-600">{tag}</span>
+                ))}
+              </div>
+              <h4 className="mt-2 text-lg font-semibold text-emerald-950">{item.title}</h4>
+              <p className="mt-3 text-sm leading-7 text-emerald-800/60">{item.desc}</p>
+              <p className="mt-4 text-xs text-emerald-600/40 border-t border-emerald-100 pt-3">
+                以上为脱敏展示，用于呈现系统能力边界与适用场景，不对应真实企业公开信息。
+              </p>
+            </div>
           ))}
         </div>
       </div>
+    </div>
+  );
+}
 
-      <div className="mt-12 grid gap-6 md:grid-cols-3">
-        {products.map((item, idx) => {
-          const Icon = item.icon;
-          return (
-            <Card key={item.title} className="rounded-[26px] border-emerald-100">
-              <CardContent className="p-6">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-800 text-white">
-                  <Icon className="h-5 w-5" />
+function ZhiweiPage({ setPage }: { setPage: (p: string) => void }) {
+  return (
+    <div className="min-h-screen bg-white pt-28 pb-20">
+      <div className="mx-auto max-w-7xl px-6">
+        {/* 页头 */}
+        <div className="text-xs font-medium tracking-[0.25em] uppercase text-emerald-600">知微 · Zhīwēi</div>
+        <h2 className="font-display mt-4 text-3xl font-bold text-emerald-950 md:text-5xl">知微｜危废管理智能体</h2>
+        <p className="mt-2 text-base text-emerald-800/60">面向危险废物资料审查、跨资料一致性比对与鉴别复核辅助场景</p>
+        <p className="mt-6 max-w-3xl text-sm leading-8 text-emerald-800/50">
+          知微强调的不是"自动给答案"，而是围绕复杂资料开展专业审查辅助。
+          它尽量从长文本、附件、多来源数据中识别问题、归集依据、构建证据链，并形成结构化审查结果或可复核底稿。
+        </p>
+
+        {/* 核心能力 */}
+        <h3 className="mt-16 text-2xl font-bold text-emerald-950">核心能力</h3>
+        <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          {[
+            { icon: BookOpen, title: "多类资料读取与识别", desc: "支持台账、环评、排污许可、鉴别报告及相关附件的读取与识别。" },
+            { icon: FileSearch, title: "文档分类与信息抽取", desc: "提取关键字段、数据和表述信息，辅助后续审查。" },
+            { icon: Layers, title: "危废对象标准化对齐", desc: "对不同来源资料中的同类危废对象进行标准化关联。" },
+            { icon: ShieldAlert, title: "跨资料一致性比对", desc: "围绕名称、代码、数量、处置方式等信息开展交叉核查。" },
+            { icon: Search, title: "问题发现与依据匹配", desc: "围绕已识别问题进行标准要求、原文表述和相关依据的归集。" },
+            { icon: Database, title: "证据包构建", desc: "在适用场景下尽量形成原文、数据、依据、计算和风险分析的组合证据链。" },
+            { icon: ClipboardCheck, title: "复核表达输出", desc: "辅助形成结构化审查结果或可供复核修改的底稿。" },
+            { icon: Lock, title: "本地部署与安全控制", desc: "强调资料可控、接口受控和本地运行能力。" },
+          ].map((item) => {
+            const Icon = item.icon;
+            return (
+              <div key={item.title} className="rounded-2xl border border-emerald-200 bg-white p-5 transition hover:shadow-lg">
+                <Icon className="h-5 w-5 text-emerald-600" />
+                <h4 className="mt-4 text-sm font-semibold text-emerald-950">{item.title}</h4>
+                <p className="mt-2 text-xs leading-6 text-emerald-800/60">{item.desc}</p>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* 核心流程 */}
+        <h3 className="mt-16 text-2xl font-bold text-emerald-950">核心流程</h3>
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-2 text-sm text-emerald-800/70">
+          {["资料接收", "全文读取 / 识别", "信息抽取", "对象对齐", "问题发现", "依据归集", "证据构建", "审查输出"].map((step, idx, arr) => (
+            <React.Fragment key={step}>
+              <span className="rounded-lg bg-emerald-50 border border-emerald-200 px-4 py-2 font-medium">{step}</span>
+              {idx < arr.length - 1 && <ChevronRight className="h-4 w-4 text-emerald-400" />}
+            </React.Fragment>
+          ))}
+        </div>
+
+        {/* 技术架构 */}
+        <h3 className="mt-16 text-2xl font-bold text-emerald-950">技术架构</h3>
+        <p className="mt-4 text-sm text-emerald-800/50">知微以规则能力、专业知识、智能识别和本地部署能力协同支撑复杂资料审查。</p>
+        <div className="mt-8 grid grid-cols-2 gap-4 md:grid-cols-4">
+          {["规则能力", "专业知识", "智能识别", "本地部署"].map((item) => (
+            <div key={item} className="rounded-xl border border-emerald-200 bg-emerald-50/50 p-5 text-center">
+              <p className="text-sm font-semibold text-emerald-800">{item}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* 当前系统能力 */}
+        <h3 className="mt-16 text-2xl font-bold text-emerald-950">当前系统能力</h3>
+        <div className="mt-8 grid gap-3 md:grid-cols-2">
+          {[
+            "多类资料读取与 OCR", "文档分类与字段抽取", "危废对象标准化关联", "跨资料一致性比对",
+            "依据匹配与问题说明", "结构化审查结果输出", "本地部署与安全控制能力", "产品演示与持续迭代能力",
+          ].map((item) => (
+            <div key={item} className="flex items-center gap-3 rounded-xl border border-emerald-100 bg-white p-4 text-sm text-emerald-800/70">
+              <CheckCircle2 className="h-4 w-4 text-emerald-500 flex-shrink-0" /> {item}
+            </div>
+          ))}
+        </div>
+
+        {/* 产品边界 */}
+        <h3 className="mt-16 text-2xl font-bold text-emerald-950">产品边界</h3>
+        <div className="mt-8 grid gap-8 md:grid-cols-2">
+          <div className="rounded-2xl border border-emerald-200 bg-white p-6">
+            <h4 className="text-base font-semibold text-emerald-950 mb-4">主要辅助内容</h4>
+            <div className="space-y-2.5">
+              {["资料读取与解析", "一致性比对", "风险提示", "核查辅助", "依据归集", "审查结果输出", "复核底稿辅助生成"].map((item) => (
+                <div key={item} className="flex items-center gap-3 text-sm text-emerald-800/70">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-500 flex-shrink-0" /> {item}
                 </div>
-                <h3 className="mt-5 text-xl font-semibold text-emerald-950">{item.title}</h3>
-                <p className="mt-3 text-sm leading-7 text-emerald-900/80">{item.desc}</p>
-                {idx === 0 && (
-                  <Button onClick={() => setPage("demoLogin")} className="mt-5 rounded-2xl bg-emerald-800 hover:bg-emerald-900">
-                    进入演示系统
-                  </Button>
-                )}
-              </CardContent>
-            </Card>
-          );
-        })}
+              ))}
+            </div>
+          </div>
+          <div className="rounded-2xl border border-red-100 bg-white p-6">
+            <h4 className="text-base font-semibold text-emerald-950 mb-4">不替代的内容</h4>
+            <div className="space-y-2.5">
+              {["违法违规定性", "行政处罚建议", "执法裁量判断", "最终专家定论"].map((item) => (
+                <div key={item} className="flex items-center gap-3 text-sm text-red-700/60">
+                  <AlertTriangle className="h-4 w-4 text-red-400 flex-shrink-0" /> {item}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* 信息安全保障 */}
+        <h3 className="mt-16 text-2xl font-bold text-emerald-950">信息安全保障</h3>
+        <p className="mt-4 max-w-3xl text-sm leading-7 text-emerald-800/50">
+          知微默认采用本地部署思路，核心模型、知识库与审查链路可在本地环境运行。
+          系统强调敏感资料留存在可控环境中，并通过服务端代理、访问鉴权、白名单、速率限制与错误脱敏等措施，提升产品演示与实际部署过程中的信息安全保障能力。
+        </p>
+        <div className="mt-8 grid gap-4 md:grid-cols-5">
+          {[
+            { icon: Server, title: "本地部署", desc: "核心能力可在本地环境运行" },
+            { icon: Database, title: "本地知识库", desc: "减少敏感资料外发风险" },
+            { icon: Shield, title: "服务端代理", desc: "浏览器不直连敏感后台接口" },
+            { icon: Lock, title: "鉴权保护", desc: "会话与接口均有访问控制" },
+            { icon: ShieldCheck, title: "安全控制", desc: "支持白名单、限流与错误脱敏" },
+          ].map((item) => {
+            const Icon = item.icon;
+            return (
+              <div key={item.title} className="rounded-xl border border-emerald-200 bg-white p-4 text-center">
+                <Icon className="mx-auto h-5 w-5 text-emerald-600 mb-2" />
+                <h4 className="text-xs font-semibold text-emerald-950">{item.title}</h4>
+                <p className="mt-1 text-[11px] leading-5 text-emerald-800/50">{item.desc}</p>
+              </div>
+            );
+          })}
+        </div>
+        <p className="mt-6 text-center text-sm text-emerald-700/50">
+          系统定位为资料审查与复核辅助工具，强调专业支撑、信息安全与可控部署。
+        </p>
+
+        {/* CTA */}
+        <div className="mt-16 rounded-2xl border border-emerald-200 bg-emerald-50/50 p-10 text-center">
+          <h3 className="text-xl font-bold text-emerald-950">了解知微的实际应用方式</h3>
+          <p className="mt-3 max-w-2xl mx-auto text-sm leading-7 text-emerald-800/50">
+            可结合产品演示、现场交流与本地部署方案，进一步了解知微在危险废物资料审查与复核辅助场景中的适用方式。
+          </p>
+          <div className="mt-6 flex flex-wrap justify-center gap-4">
+            <button onClick={() => setPage("demo")}
+              className={`${btnPrimary} px-7 py-2.5`}>
+              查看演示
+            </button>
+            <button onClick={() => setPage("contact")}
+              className={`${btnSecondary} px-7 py-2.5`}>
+              联系我们
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
 }
 
 function ContactPage() {
-  const contacts = [
-    { icon: Phone, text: "13660969154" },
-    { icon: Mail, text: "yidianhuanbao@yeah.com" },
-    { icon: MapPin, text: "广州市天河区天慧路10号A409室" },
-  ];
-
   return (
-    <div className="mx-auto max-w-7xl px-6 py-20">
-      <SectionTitle eyebrow="CONTACT" title="联系我们" desc="欢迎联系亿点环保，交流环保咨询、项目合作与危废智能体演示需求。" />
-      <div className="mt-10 grid gap-6 md:grid-cols-3">
-        {contacts.map((item) => {
-          const Icon = item.icon;
-          return (
-            <div key={item.text} className="rounded-2xl border border-emerald-100 p-6">
-              <Icon className="mb-2 h-5 w-5 text-emerald-800" />
-              <div className="leading-7 text-emerald-900/85">{item.text}</div>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-function SectionHint({ icon: Icon, title, desc }: { icon: React.ComponentType<{ className?: string }>; title: string; desc: string }) {
-  return (
-    <div className="flex items-start gap-3 rounded-2xl border border-emerald-100 bg-white p-4">
-      <div className="mt-0.5 rounded-xl bg-emerald-800 p-2 text-white">
-        <Icon className="h-4 w-4" />
-      </div>
-      <div>
-        <div className="font-medium text-emerald-950">{title}</div>
-        <div className="mt-1 text-sm leading-6 text-emerald-900/80">{desc}</div>
-      </div>
-    </div>
-  );
-}
-
-function LoginPage({ onEnter }: { onEnter: () => void }) {
-  return (
-    <div className="min-h-[calc(100vh-149px)] bg-emerald-50/40 text-emerald-950">
-      <main className="mx-auto grid min-h-[calc(100vh-149px)] max-w-7xl gap-8 px-6 py-10 lg:grid-cols-[1.05fr_0.95fr] lg:py-14">
-        <div className="flex flex-col justify-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-white px-4 py-2 text-sm text-emerald-800 shadow-sm">
-            <ShieldCheck className="h-4 w-4" />
-            危险废物管理智能体演示入口
-          </div>
-          <h1 className="mt-6 text-4xl font-bold tracking-tight text-emerald-950 md:text-5xl md:leading-[1.1]">
-            危险废物管理智能体
-            <span className="mt-2 block">演示登录页</span>
-          </h1>
-          <p className="mt-5 max-w-2xl text-base leading-8 text-emerald-900/80 md:text-lg">
-            面向企业危险废物管理场景，提供台账智能审查、跨资料一致性比对、规范化管理辅助与演示问答。
+    <div className="min-h-screen bg-white pt-28 pb-20">
+      <div className="mx-auto max-w-7xl px-6">
+        <div className="text-xs font-medium tracking-[0.25em] uppercase text-emerald-600">联络 · Contact</div>
+        <h2 className="font-display mt-4 text-3xl font-bold text-emerald-950 md:text-5xl">联系我们</h2>
+        <p className="mt-6 text-base text-emerald-800/60">欢迎咨询环保专业服务、知微产品介绍及本地部署应用方式</p>
+        <p className="mt-4 max-w-3xl text-sm leading-7 text-emerald-800/50">
+          如您关注危险废物资料审查、跨资料一致性比对、鉴别复核辅助或本地部署应用，欢迎与我们联系。
+        </p>
+        <div className="mt-10 grid gap-6 md:grid-cols-3">
+          {contactInfo.map((item) => {
+            const Icon = item.icon;
+            return (
+              <div key={item.text} className="rounded-2xl border border-emerald-200 bg-white p-6 transition hover:shadow-lg">
+                <Icon className="h-5 w-5 text-emerald-600" />
+                <div className="mt-4 text-xs text-emerald-600">{item.label}</div>
+                <div className="mt-1 font-medium text-emerald-950">{item.text}</div>
+              </div>
+            );
+          })}
+        </div>
+        <div className="mt-12 rounded-2xl border border-emerald-200 bg-emerald-50/50 p-8">
+          <p className="text-sm text-emerald-800/60 mb-6">
+            我们可根据实际需求，介绍知微适用场景、能力边界与部署方式。
           </p>
-
-          <div className="mt-8 grid gap-4 sm:grid-cols-2">
-            <SectionHint icon={Database} title="支持输入" desc="企业原始台账 Excel / CSV，或直接输入危废合规相关问题。" />
-            <SectionHint icon={ShieldCheck} title="能力边界" desc="管理智能体定位，聚焦监管辅助、风险提示与规范化审查。" />
-            <SectionHint icon={Clock3} title="适合场景" desc="官网演示、访客体验、销售演示、项目路演与客户预沟通。" />
-            <SectionHint icon={Sparkles} title="展示重点" desc="V1 台账审查与路线展示。" />
-          </div>
-
-          <div className="mt-8 grid gap-4 md:grid-cols-2">
-            {sceneCards.map((item) => {
-              const Icon = item.icon;
-              return (
-                <Card key={item.title} className="rounded-[24px] border-emerald-100 bg-white shadow-sm">
-                  <CardContent className="p-5">
-                    <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-800 text-white">
-                      <Icon className="h-5 w-5" />
-                    </div>
-                    <div className="mt-4 text-lg font-semibold text-emerald-950">{item.title}</div>
-                    <p className="mt-2 text-sm leading-7 text-emerald-900/80">{item.desc}</p>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
+          <h3 className="text-lg font-semibold text-emerald-950 mb-4">留言咨询</h3>
+          <form onSubmit={(e) => e.preventDefault()} className="grid gap-4 md:grid-cols-2">
+            <div>
+              <label htmlFor="contact-name" className="block text-xs text-emerald-600 mb-1.5">姓名</label>
+              <input id="contact-name" className="w-full rounded-lg border border-emerald-200 bg-white px-4 py-2.5 text-sm text-emerald-950 outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-200" />
+            </div>
+            <div>
+              <label htmlFor="contact-phone" className="block text-xs text-emerald-600 mb-1.5">联系方式</label>
+              <input id="contact-phone" className="w-full rounded-lg border border-emerald-200 bg-white px-4 py-2.5 text-sm text-emerald-950 outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-200" />
+            </div>
+            <div className="md:col-span-2">
+              <label htmlFor="contact-message" className="block text-xs text-emerald-600 mb-1.5">咨询内容</label>
+              <textarea id="contact-message" className="w-full rounded-lg border border-emerald-200 bg-white px-4 py-2.5 text-sm text-emerald-950 outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-200 h-24 resize-none" />
+            </div>
+            <div className="md:col-span-2">
+              <button type="submit" className={`${btnPrimary} px-7 py-2.5`}>
+                提交咨询
+              </button>
+            </div>
+          </form>
         </div>
-
-        <div className="flex items-center">
-          <Card className="w-full rounded-[32px] border-emerald-100 bg-white shadow-2xl shadow-emerald-100/70">
-            <CardContent className="p-6 md:p-8">
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="text-sm text-emerald-700">演示入口</div>
-                  <div className="mt-1 text-2xl font-semibold text-emerald-950">登录体验</div>
-                  <div className="mt-1 text-sm text-emerald-700">演示重点：V1 台账审查与路线展示</div>
-                </div>
-                <div className="rounded-2xl bg-emerald-800 p-3 text-white">
-                  <Lock className="h-5 w-5" />
-                </div>
-              </div>
-
-              <div className="mt-6 grid gap-4">
-                <div>
-                  <label className="mb-2 block text-sm font-medium text-emerald-900">账号</label>
-                  <div className="relative">
-                    <User className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-emerald-500" />
-                    <Input defaultValue="demo@yidiancst.com" className="h-12 rounded-2xl border-emerald-100 pl-10" />
-                  </div>
-                </div>
-                <div>
-                  <label className="mb-2 block text-sm font-medium text-emerald-900">密码</label>
-                  <div className="relative">
-                    <KeyRound className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-emerald-500" />
-                    <Input type="password" defaultValue="123456" className="h-12 rounded-2xl border-emerald-100 pl-10" />
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm leading-7 text-emerald-900">
-                建议官网正式上线时采用&ldquo;官网账号登录 + 演示权限控制&rdquo;模式。本页当前重点展示 V1 台账智能审查与整体路线定位。
-              </div>
-
-              <Button onClick={onEnter} className="mt-6 h-12 w-full rounded-2xl text-base bg-emerald-800 hover:bg-emerald-900">
-                登录进入演示窗口
-                <ChevronRight className="ml-2 h-4 w-4" />
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      </main>
-    </div>
-  );
-}
-
-function ChatBubble({ role, text }: { role: string; text: string }) {
-  const isAssistant = role === "assistant";
-  return (
-    <div className={`flex ${isAssistant ? "justify-start" : "justify-end"}`}>
-      <div
-        className={`max-w-[88%] rounded-[22px] px-4 py-3 text-sm leading-7 shadow-sm ${
-          isAssistant ? "border border-emerald-100 bg-white text-emerald-900" : "bg-emerald-800 text-white"
-        }`}
-      >
-        {text}
       </div>
     </div>
   );
 }
 
-function DemoPage({ onBack }: { onBack: () => void }) {
-  const [messages, setMessages] = useState(chatSeed);
-  const [input, setInput] = useState(quickQuestions[0]);
+/* ═══════════════════════════════════════════════════════════
+   DEMO PAGE
+   ═══════════════════════════════════════════════════════════ */
 
-  const stats = useMemo(
-    () => [
-      { label: "当前模式", value: "演示版" },
-      { label: "输入类型", value: "Excel / CSV / 问答" },
-      { label: "当前重点", value: "V1 台账审查" },
-    ],
-    []
-  );
+function FindingBadge({ level }: { level: string }) {
+  const styles: Record<string, string> = { high: "bg-red-50 text-red-600 border-red-200", medium: "bg-amber-50 text-amber-600 border-amber-200", low: "bg-sky-50 text-sky-600 border-sky-200" };
+  const labels: Record<string, string> = { high: "高风险", medium: "中风险", low: "低风险" };
+  return <span className={`inline-flex rounded-full border px-2.5 py-0.5 text-xs font-medium ${styles[level]}`}>{labels[level]}</span>;
+}
 
-  const sendMessage = () => {
-    if (!input.trim()) return;
-    const userText = input.trim();
-    setMessages((prev) => [
-      ...prev,
-      { role: "user", text: userText },
-      {
-        role: "assistant",
-        text: `已接收演示问题：${userText}。基于危险废物管理智能体当前展示逻辑，我会优先从字段完整性、时间逻辑、危废代码表达、计量单位一致性以及与环评、排污许可等资料之间的一致性角度进行辅助审查，并输出问题提示与依据提示。`,
-      },
-      {
-        role: "assistant",
-        text: `演示示例：${suggestedFindings[0]} ${suggestedFindings[1]}`,
-      },
-    ]);
-    setInput("");
-  };
+function DemoFlowPage({ scenario, onBack }: { scenario: DemoScenario; onBack: () => void }) {
+  const [phase, setPhase] = useState<"upload" | "running" | "done">("upload");
+  const [currentStep, setCurrentStep] = useState(0);
+  const [progress, setProgress] = useState(0);
+  const [visibleFindings, setVisibleFindings] = useState(0);
+
+  const setDemoPhase = useCallback((p: "upload" | "running") => { setPhase(p); setCurrentStep(0); setProgress(0); setVisibleFindings(0); }, []);
+  const startDemo = useCallback(() => setDemoPhase("running"), [setDemoPhase]);
+  const resetDemo = useCallback(() => setDemoPhase("upload"), [setDemoPhase]);
+
+  useEffect(() => {
+    if (phase !== "running") return;
+    if (currentStep >= scenario.steps.length) { const t = setTimeout(() => setPhase("done"), 800); return () => clearTimeout(t); }
+    const dur = scenario.steps[currentStep].duration;
+    let el = 0;
+    const timer = setInterval(() => {
+      el += 50;
+      setProgress(((currentStep + Math.min(el / dur, 1)) / scenario.steps.length) * 100);
+      if (el >= dur) { clearInterval(timer); setCurrentStep((s) => s + 1); }
+    }, 50);
+    return () => clearInterval(timer);
+  }, [phase, currentStep, scenario.steps]);
+
+  useEffect(() => {
+    if (phase !== "done" || visibleFindings >= scenario.findings.length) return;
+    const t = setTimeout(() => setVisibleFindings((v) => v + 1), 300);
+    return () => clearTimeout(t);
+  }, [phase, visibleFindings, scenario.findings.length]);
+
+  const Icon = scenario.icon;
 
   return (
-    <div className="min-h-[calc(100vh-149px)] bg-emerald-50/40 text-emerald-950">
-      <main className="mx-auto grid max-w-7xl gap-6 px-6 py-8 lg:grid-cols-[0.78fr_1.42fr]">
-        <div className="grid gap-6">
-          <Card className="rounded-[28px] border-emerald-100 bg-white shadow-sm">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="text-sm text-emerald-700">演示状态</div>
-                  <div className="mt-1 text-2xl font-semibold text-emerald-950">已登录</div>
-                </div>
-                <div className="rounded-2xl bg-emerald-800 p-3 text-white">
-                  <Building2 className="h-5 w-5" />
-                </div>
-              </div>
-
-              <div className="mt-6 grid gap-3">
-                {stats.map((item) => (
-                  <div key={item.label} className="flex items-center justify-between rounded-2xl border border-emerald-100 px-4 py-3 text-sm">
-                    <span className="text-emerald-700">{item.label}</span>
-                    <span className="font-medium text-emerald-950">{item.value}</span>
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-6 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm leading-7 text-emerald-900">
-                <div className="flex items-center gap-2 font-medium">
-                  <AlertTriangle className="h-4 w-4" />
-                  使用说明
-                </div>
-                <div className="mt-2">
-                  本系统用于管理辅助、风险提示、规范化审查、一致性比对与展示演示，不替代正式法律法规解读、行政认定或处罚判断。
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="rounded-[28px] border-emerald-100 bg-white shadow-sm">
-            <CardContent className="p-6">
-              <div className="text-lg font-semibold text-emerald-950">推荐演示问题</div>
-              <div className="mt-4 flex flex-wrap gap-3">
-                {quickQuestions.map((item) => (
-                  <button
-                    key={item}
-                    onClick={() => setInput(item)}
-                    className="rounded-full border border-emerald-100 bg-emerald-50 px-4 py-2 text-left text-sm text-emerald-900 transition hover:border-emerald-300 hover:bg-white"
-                  >
-                    {item}
-                  </button>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="rounded-[28px] border-emerald-100 bg-white shadow-sm">
-            <CardContent className="p-6">
-              <div className="text-lg font-semibold text-emerald-950">演示场景</div>
-              <div className="mt-4 grid gap-3">
-                {sceneCards.map((item) => {
-                  const Icon = item.icon;
-                  return (
-                    <div key={item.title} className="rounded-2xl border border-emerald-100 p-4">
-                      <div className="flex items-center gap-3">
-                        <div className="rounded-xl bg-emerald-800 p-2 text-white">
-                          <Icon className="h-4 w-4" />
-                        </div>
-                        <div className="font-medium text-emerald-950">{item.title}</div>
-                      </div>
-                      <p className="mt-2 text-sm leading-7 text-emerald-900/80">{item.desc}</p>
-                    </div>
-                  );
-                })}
-              </div>
-            </CardContent>
-          </Card>
+    <div className="min-h-screen bg-white pt-24">
+      <div className="border-b border-emerald-100 bg-white/90 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-3">
+          <button onClick={onBack} className="flex items-center gap-2 text-sm text-emerald-600 hover:text-emerald-900">
+            <ArrowLeft className="h-4 w-4" /> 返回
+          </button>
+          <div className="flex items-center gap-2">
+            <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700">{scenario.tag}</span>
+            <span className="text-sm font-semibold text-emerald-950">{scenario.version}</span>
+          </div>
+          <span className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs text-emerald-700">演示模式</span>
         </div>
+      </div>
 
-        <Card className="rounded-[32px] border-emerald-100 bg-white shadow-xl shadow-emerald-100/50">
-          <CardContent className="flex h-[calc(100vh-220px)] min-h-[760px] flex-col p-0">
-            <div className="flex items-center justify-between border-b border-emerald-100 px-6 py-4">
-              <div>
-                <div className="text-sm text-emerald-700">体验窗口</div>
-                <div className="mt-1 text-xl font-semibold text-emerald-950">危险废物管理智能体</div>
-                <div className="mt-1 text-sm text-emerald-700">演示版：V1 台账智能审查 + 路线展示</div>
+      <div className="mx-auto max-w-5xl px-6 py-10">
+        {phase === "upload" && (
+          <div className="space-y-8">
+            <div className="text-center">
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-200">
+                <Icon className="h-7 w-7" />
               </div>
-              <div className="flex items-center gap-2 text-sm text-emerald-800">
-                <CheckCircle2 className="h-4 w-4" />
-                系统在线
+              <h2 className="font-display mt-6 text-2xl font-bold text-emerald-950 md:text-3xl">{scenario.title}</h2>
+              <p className="mt-3 text-base text-emerald-800/50">{scenario.desc}</p>
+            </div>
+            <div className="rounded-2xl border-2 border-dashed border-emerald-200 bg-emerald-50/30 p-8">
+              <div className="text-center text-sm text-emerald-600 mb-6">已预置演示文件</div>
+              <div className="space-y-3">
+                {scenario.files.map((f) => { const FI = f.icon; return (
+                  <div key={f.name} className="flex items-center gap-4 rounded-xl border border-emerald-100 bg-white p-4">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600"><FI className="h-5 w-5" /></div>
+                    <div className="flex-1 min-w-0">
+                      <div className="font-medium text-emerald-950 truncate">{f.name}</div>
+                      <div className="text-xs text-emerald-600/50">{f.type} · {f.size}</div>
+                    </div>
+                    <CheckCircle2 className="h-5 w-5 text-emerald-500" />
+                  </div>
+                ); })}
               </div>
             </div>
+            <div className="flex justify-center">
+              <button onClick={startDemo} className="flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald-700 to-teal-600 px-10 py-3.5 font-medium text-white hover:from-emerald-800 hover:to-teal-700">
+                <Play className="h-5 w-5" /> 开始审查演示
+              </button>
+            </div>
+          </div>
+        )}
 
-            <div className="grid gap-3 border-b border-emerald-100 bg-emerald-50/40 px-6 py-4 md:grid-cols-3">
-              <div className="rounded-2xl border border-emerald-100 bg-white p-4 text-sm">
-                <div className="flex items-center gap-2 text-emerald-700">
-                  <Upload className="h-4 w-4" />
-                  上传入口
-                </div>
-                <div className="mt-2 font-medium text-emerald-950">支持 Excel / CSV</div>
-                <div className="mt-1 text-xs text-emerald-700">V1 实际运行输入</div>
+        {phase === "running" && (
+          <div className="space-y-8">
+            <div className="text-center">
+              <h2 className="text-2xl font-bold text-emerald-950">审查进行中...</h2>
+              <p className="mt-2 text-sm text-emerald-800/50">{scenario.title}</p>
+            </div>
+            <div>
+              <div className="flex justify-between text-sm mb-2">
+                <span className="text-emerald-700/50">总进度</span>
+                <span className="font-mono font-semibold text-emerald-900">{Math.round(progress)}%</span>
               </div>
-              <div className="rounded-2xl border border-emerald-100 bg-white p-4 text-sm">
-                <div className="flex items-center gap-2 text-emerald-700">
-                  <Search className="h-4 w-4" />
-                  审查重点
-                </div>
-                <div className="mt-2 font-medium text-emerald-950">字段、逻辑、口径、一致性</div>
-              </div>
-              <div className="rounded-2xl border border-emerald-100 bg-white p-4 text-sm">
-                <div className="flex items-center gap-2 text-emerald-700">
-                  <Bot className="h-4 w-4" />
-                  输出方式
-                </div>
-                <div className="mt-2 font-medium text-emerald-950">问题提示 + 依据提示</div>
+              <div className="h-1.5 rounded-full bg-emerald-100 overflow-hidden">
+                <div className="h-full rounded-full bg-emerald-500 transition-all duration-200" style={{ width: `${progress}%` }} />
               </div>
             </div>
+            <div className="rounded-2xl border border-emerald-200 bg-white p-6">
+              {currentStep < scenario.steps.length ? (
+                <div className="flex items-start gap-4">
+                  <Loader2 className="h-6 w-6 animate-spin text-emerald-500 mt-0.5" />
+                  <div>
+                    <div className="text-lg font-semibold text-emerald-950">{scenario.steps[currentStep].label}</div>
+                    <p className="mt-2 text-sm text-emerald-800/50">{scenario.steps[currentStep].detail}</p>
+                    {currentStep === 0 && <div className="mt-4 rounded-xl bg-emerald-50 p-4 text-sm text-emerald-800">{scenario.parseResult}</div>}
+                  </div>
+                </div>
+              ) : (
+                <div className="flex items-center gap-4">
+                  <CheckCircle2 className="h-6 w-6 text-emerald-500" />
+                  <div className="text-lg font-semibold text-emerald-950">所有审查步骤已完成</div>
+                </div>
+              )}
+              {currentStep > 0 && (
+                <div className="mt-6 space-y-2 border-t border-emerald-100 pt-4">
+                  {scenario.steps.slice(0, currentStep).map((s, idx) => (
+                    <div key={idx} className="flex items-center gap-3 text-sm text-emerald-700/50">
+                      <CheckCircle2 className="h-4 w-4 text-emerald-500" /> {s.label}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
 
-            <div className="flex-1 space-y-4 overflow-y-auto bg-emerald-50/40 px-6 py-5">
-              {messages.map((item, idx) => (
-                <ChatBubble key={`${item.role}-${idx}`} role={item.role} text={item.text} />
+        {phase === "done" && (
+          <div className="space-y-8">
+            <div className="text-center">
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-50">
+                <CheckCircle2 className="h-8 w-8 text-emerald-500" />
+              </div>
+              <h2 className="font-display mt-5 text-2xl font-bold text-emerald-950 md:text-3xl">审查完成</h2>
+              <p className="mt-2 text-sm text-emerald-800/50">耗时 {scenario.summary.duration}</p>
+            </div>
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+              {[
+                { l: "问题总数", v: scenario.summary.total, c: "text-emerald-950" },
+                { l: "高风险", v: scenario.summary.high, c: "text-red-600" },
+                { l: "中风险", v: scenario.summary.medium, c: "text-amber-600" },
+                { l: "低风险", v: scenario.summary.low, c: "text-sky-600" },
+              ].map((s) => (
+                <div key={s.l} className="rounded-2xl border border-emerald-200 bg-white p-5 text-center">
+                  <div className={`text-3xl font-bold ${s.c}`}>{s.v}</div>
+                  <div className="mt-1 text-xs text-emerald-800/40">{s.l}</div>
+                </div>
               ))}
             </div>
-
-            <div className="border-t border-emerald-100 bg-white px-6 py-5">
-              <div className="rounded-[28px] border border-emerald-100 bg-emerald-50/40 p-3 shadow-sm">
-                <div className="flex flex-col gap-3 md:flex-row md:items-end">
-                  <div className="flex-1">
-                    <label className="mb-2 block text-sm font-medium text-emerald-900">输入演示问题</label>
-                    <Input
-                      value={input}
-                      onChange={(e) => setInput(e.target.value)}
-                      onKeyDown={(e) => { if (e.key === "Enter") sendMessage(); }}
-                      placeholder="例如：帮我检查这份危废台账是否存在常见规范问题"
-                      className="h-12 rounded-2xl border-emerald-100 bg-white"
-                    />
-                  </div>
-                  <div className="flex gap-3">
-                    <Button variant="outline" className="h-12 rounded-2xl border-emerald-300 text-emerald-900 hover:bg-emerald-50">
-                      <Upload className="mr-2 h-4 w-4" />
-                      上传台账
-                    </Button>
-                    <Button onClick={sendMessage} className="h-12 rounded-2xl px-6 bg-emerald-800 hover:bg-emerald-900">
-                      发送
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
+            <div className="rounded-2xl border border-emerald-200 bg-white p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-lg font-semibold text-emerald-950">审查发现清单</h3>
+                <div className="flex items-center gap-2 text-xs text-emerald-700/40"><Eye className="h-3.5 w-3.5" /> {visibleFindings} / {scenario.findings.length}</div>
               </div>
-              <Button variant="ghost" onClick={onBack} className="mt-3 rounded-2xl text-emerald-900 hover:bg-emerald-50">
-                返回登录页
-              </Button>
+              <div className="space-y-3">
+                {scenario.findings.slice(0, visibleFindings).map((f) => (
+                  <motion.div key={f.code} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+                    className="flex gap-4 rounded-xl border border-emerald-100 bg-emerald-50/30 p-4">
+                    <div className="flex flex-col items-start gap-2 flex-shrink-0">
+                      <FindingBadge level={f.level} />
+                      <span className="font-mono text-xs text-emerald-700/30">{f.code}</span>
+                    </div>
+                    <p className="text-sm leading-7 text-emerald-900/70">{f.text}</p>
+                  </motion.div>
+                ))}
+              </div>
             </div>
-          </CardContent>
-        </Card>
-      </main>
+            <div className="flex flex-col items-center gap-4">
+              <button onClick={resetDemo} className="flex items-center gap-2 rounded-full border border-emerald-200 px-6 py-2.5 text-sm text-emerald-700 hover:bg-emerald-50">
+                <RotateCcw className="h-4 w-4" /> 重新播放
+              </button>
+              <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-6 py-3 text-center">
+                <p className="text-xs text-emerald-700/60">以上为脱敏演示数据。知微定位为资料审查与复核辅助工具，不替代最终专家判断，不直接输出执法结论。</p>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
 
-function Footer() {
+function DemoShowcasePage() {
+  const [sel, setSel] = useState<string | null>(null);
+  if (sel) { const sc = demoScenarios.find((s) => s.id === sel)!; return <DemoFlowPage scenario={sc} onBack={() => setSel(null)} />; }
+
   return (
-    <footer className="border-t border-emerald-100 bg-white">
-      <div className="mx-auto grid max-w-7xl gap-10 px-6 py-16 md:grid-cols-2">
-        <div>
-          <BrandBlock />
-          <p className="mt-5 max-w-xl text-sm leading-7 text-emerald-900/80">
-            专注环保咨询服务与环保数字化产品建设，围绕企业合规管理、绿色制造与危险废物管理场景数字化，提供更稳健、更规范、更高效的环保管理支持。
+    <div className="min-h-screen bg-white pt-24">
+      <section className="py-20 md:py-28">
+        <div className="mx-auto max-w-4xl px-6 text-center">
+          <h1 className="font-display text-4xl font-bold text-emerald-950 md:text-5xl">知微产品演示</h1>
+          <p className="mt-4 max-w-2xl mx-auto text-base leading-8 text-emerald-800/50">
+            请选择一个典型场景，了解知微在危险废物资料审查与复核辅助中的应用方式。
+          </p>
+          <p className="mt-2 text-sm text-emerald-700/40">
+            本页面展示均为脱敏案例演示，不涉及真实企业公开信息。
           </p>
         </div>
+      </section>
+      <section className="pb-16">
+        <div className="mx-auto max-w-4xl px-6 grid gap-6 md:grid-cols-3">
+          {demoScenarios.map((s) => {
+            const Icon = s.icon;
+            return (
+              <motion.button key={s.id} onClick={() => setSel(s.id)} whileHover={{ y: -3 }}
+                className="group rounded-xl border border-emerald-200 bg-white p-6 text-left transition hover:shadow-lg hover:border-emerald-300">
+                <div className="flex items-start justify-between">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 transition group-hover:bg-emerald-100">
+                    <Icon className="h-5 w-5" />
+                  </div>
+                  <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">{s.tag}</span>
+                </div>
+                <h3 className="mt-5 text-lg font-bold text-emerald-950">{s.version}</h3>
+                <p className="mt-2 text-sm leading-7 text-emerald-800/50">{s.desc}</p>
+                <div className="mt-5 flex items-center gap-2 text-sm font-medium text-emerald-600 group-hover:text-emerald-800">
+                  <Play className="h-4 w-4" /> 查看演示 <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </div>
+              </motion.button>
+            );
+          })}
+        </div>
+      </section>
 
-        <div className="grid gap-4 text-sm text-emerald-900/85">
-          <div className="flex items-center gap-3 rounded-2xl border border-emerald-100 p-4">
-            <Phone className="h-4 w-4 text-emerald-800" />
-            <span>联系电话：13660969154</span>
-          </div>
-          <div className="flex items-center gap-3 rounded-2xl border border-emerald-100 p-4">
-            <Mail className="h-4 w-4 text-emerald-800" />
-            <span>企业邮箱：yidianhuanbao@yeah.com</span>
-          </div>
-          <div className="flex items-center gap-3 rounded-2xl border border-emerald-100 p-4">
-            <MapPin className="h-4 w-4 text-emerald-800" />
-            <span>公司地址：广州市天河区天慧路10号A409室</span>
+      {/* 产品路线 */}
+      <section className="border-t border-emerald-100 py-16">
+        <div className="mx-auto max-w-3xl px-6">
+          <h3 className="text-center text-lg font-bold text-emerald-950 mb-8">演示场景与成熟度</h3>
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+            {[
+              { label: "当前重点展示", title: "跨资料一致性比对", color: "bg-emerald-100 text-emerald-700" },
+              { label: "持续完善中", title: "鉴别复核辅助", color: "bg-teal-100 text-teal-700" },
+              { label: "拓展方向演示", title: "现场核查辅助", color: "bg-emerald-100/50 text-emerald-600/50" },
+              { label: "长期目标", title: "全过程危废管理智能体", color: "bg-emerald-50/50 text-emerald-600/40" },
+            ].map((item) => (
+              <div key={item.title} className="rounded-xl border border-emerald-200 bg-white p-4 text-center">
+                <div className={`inline-flex rounded-full px-2.5 py-0.5 text-[10px] font-medium ${item.color}`}>{item.label}</div>
+                <p className="mt-2 text-xs font-semibold text-emerald-950">{item.title}</p>
+              </div>
+            ))}
           </div>
         </div>
+      </section>
+
+      {/* 演示声明 */}
+      <section className="border-t border-emerald-100 py-10">
+        <div className="mx-auto max-w-3xl px-6 text-center">
+          <div className="rounded-xl border border-emerald-200 bg-emerald-50/50 p-6">
+            <div className="flex items-center justify-center gap-2 text-sm font-medium text-emerald-700">
+              <AlertTriangle className="h-4 w-4" /> 演示声明
+            </div>
+            <p className="mt-3 text-sm leading-7 text-emerald-800/40">
+              本页面仅用于展示产品能力边界与适用场景，页面中的企业名称、数据及材料均为脱敏或虚构示例。
+              知微定位为资料审查与复核辅助工具，聚焦问题发现、依据归集与结构化表达，不替代最终专家判断，不直接输出执法结论。
+            </p>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════
+   FOOTER
+   ═══════════════════════════════════════════════════════════ */
+
+function Footer({ setPage }: { setPage: (p: string) => void }) {
+  return (
+    <footer className="border-t border-emerald-100 bg-white">
+      <div className="mx-auto grid max-w-7xl gap-10 px-6 py-12 md:grid-cols-3">
+        <div>
+          <div className="flex items-center gap-3 text-emerald-900">
+            <LogoMark className="h-6 w-6" />
+            <div>
+              <div className="text-[10px] tracking-[0.3em] uppercase text-emerald-500">YIDIAN CST</div>
+              <div className="text-sm font-semibold">广州市亿点环保有限公司｜知微危废管理智能体</div>
+            </div>
+          </div>
+          <p className="mt-4 max-w-md text-xs leading-6 text-emerald-800/40">
+            专注环保咨询服务与数字化产品建设。知微智能体，从危废合规审查与鉴别复核开始，见微知著。
+          </p>
+        </div>
+        <div>
+          <div className="text-xs font-semibold text-emerald-700 mb-3">快速链接</div>
+          <div className="grid gap-1.5 text-xs text-emerald-800/50">
+            {[
+              ["about", "关于我们"], ["services", "服务范围"], ["zhiwei", "知微智能体"],
+              ["cases", "项目案例"], ["contact", "联系我们"],
+            ].map(([key, label]) => (
+              <button key={key} onClick={() => setPage(key)} className="text-left hover:text-emerald-700 transition">
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="grid gap-2 text-xs text-emerald-800/50">
+          {contactInfo.map((item) => { const Icon = item.icon; return (
+            <div key={item.text} className="flex items-center gap-3">
+              <Icon className="h-3.5 w-3.5 text-emerald-400" /> {item.text}
+            </div>
+          ); })}
+        </div>
       </div>
-      <div className="border-t border-emerald-100 bg-emerald-50/40 py-6 text-center text-sm text-emerald-700">
-        &copy; {new Date().getFullYear()} 广州市亿点环保有限公司 &middot; YIDIAN CST
+      <div className="border-t border-emerald-100 py-5 text-center text-xs text-emerald-800/30">
+        &copy; {CURRENT_YEAR} 广州市亿点环保有限公司 &middot; YIDIAN CST
       </div>
     </footer>
   );
 }
 
+/* ── Scroll to top button ── */
+function ScrollToTop() {
+  const [show, setShow] = useState(false);
+  useEffect(() => {
+    const onScroll = () => {
+      const s = window.scrollY > 400;
+      setShow(prev => prev === s ? prev : s);
+    };
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+  return (
+    <AnimatePresence>
+      {show && (
+        <motion.button
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.8 }}
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          className="fixed bottom-6 right-6 z-50 flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-r from-emerald-700 to-teal-600 text-white shadow-lg shadow-teal-700/20 transition hover:from-emerald-800 hover:to-teal-700"
+          aria-label="回到顶部"
+        >
+          <ArrowUp className="h-4 w-4" />
+        </motion.button>
+      )}
+    </AnimatePresence>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ROOT
+   ═══════════════════════════════════════════════════════════ */
+
+function getPageFromHash(): string {
+  if (typeof window === "undefined") return "home";
+  const hash = window.location.hash.replace("#", "");
+  const valid = ["home", "about", "services", "cases", "zhiwei", "contact", "demo"];
+  return valid.includes(hash) ? hash : "home";
+}
+
 export default function YidianEcoSite() {
-  const [page, setPage] = useState("home");
+  const [page, setPageState] = useState("home");
+
+  useEffect(() => {
+    setPageState(getPageFromHash());
+    const onHash = () => setPageState(getPageFromHash());
+    window.addEventListener("hashchange", onHash);
+    return () => window.removeEventListener("hashchange", onHash);
+  }, []);
+
+  const setPage = useCallback((p: string) => {
+    window.location.hash = p === "home" ? "" : p;
+    if (p === "home" && window.location.hash === "") setPageState("home");
+  }, []);
+
+  useEffect(() => { window.scrollTo({ top: 0, behavior: "smooth" }); }, [page]);
 
   let content;
   if (page === "about") content = <AboutPage />;
   else if (page === "services") content = <ServicesPage />;
   else if (page === "cases") content = <CasesPage />;
-  else if (page === "products") content = <ProductsPage setPage={setPage} />;
+  else if (page === "zhiwei") content = <ZhiweiPage setPage={setPage} />;
   else if (page === "contact") content = <ContactPage />;
-  else if (page === "demoLogin") content = <LoginPage onEnter={() => setPage("demo")} />;
-  else if (page === "demo") content = <DemoPage onBack={() => setPage("demoLogin")} />;
+  else if (page === "demo") content = <DemoShowcasePage />;
   else content = <HomePage setPage={setPage} />;
 
   return (
-    <div className="min-h-screen bg-white text-emerald-950">
+    <div className="min-h-screen bg-white">
       <TopNav page={page} setPage={setPage} />
-      {content}
-      <Footer />
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={page}
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.25, ease: "easeOut" }}
+        >
+          {content}
+        </motion.div>
+      </AnimatePresence>
+      <Footer setPage={setPage} />
+      <ScrollToTop />
     </div>
   );
 }
