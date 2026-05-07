@@ -375,7 +375,7 @@ function HomePage({ setPage }: { setPage: (p: string) => void }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.5 }}
-            className="mt-8 text-center text-base leading-8 text-emerald-900/70 md:text-lg whitespace-nowrap"
+            className="mt-8 text-center text-sm leading-8 text-emerald-900/70 md:text-base"
           >
             见微知著的管理智能体——从危废合规审查与鉴别复核开始，在复杂数据中洞察每一处关键偏差
           </motion.p>
