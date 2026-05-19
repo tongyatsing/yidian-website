@@ -1,5 +1,6 @@
 // scripts/content-guard.mjs
 // 内容准确性红线守卫：禁用词必须缺席，必含词必须在场。
+// 运行前提：必须从项目根目录执行，即 node scripts/content-guard.mjs
 import { readFileSync } from "node:fs";
 
 const SITE = "src/components/YidianEcoSite.tsx";
