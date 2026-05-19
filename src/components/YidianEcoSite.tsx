@@ -196,7 +196,7 @@ const demoScenarios: DemoScenario[] = [
 
 function LogoMark({ className = "h-8 w-8" }: { className?: string }) {
   return (
-    <svg viewBox="0 0 64 64" className={className} fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="YIDIAN CST logo">
+    <svg viewBox="0 0 64 64" className={className} fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="知微 ZHIWEI logo">
       <circle cx="32" cy="32" r="9" fill="currentColor" />
       <path d="M12 32C12 20.954 20.954 12 32 12C43.046 12 52 20.954 52 32C52 43.046 43.046 52 32 52" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
       <path d="M19 18L26 11" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
@@ -237,7 +237,7 @@ function TopNav({ page, setPage }: { page: string; setPage: (p: string) => void 
         <button onClick={() => navigateTo("home")} className="flex items-center gap-3 text-emerald-900">
           <LogoMark className="h-7 w-7" />
           <div>
-            <div className="text-[10px] tracking-[0.3em] uppercase text-emerald-600">YIDIAN CST</div>
+            <div className="text-[10px] tracking-[0.3em] uppercase text-emerald-600">ZHIWEI</div>
             <div className="text-sm font-semibold">亿点环保</div>
           </div>
         </button>
@@ -1336,7 +1336,7 @@ function DemoShowcasePage() {
               { label: "当前重点展示", title: "跨资料一致性比对", color: "bg-emerald-100 text-emerald-700" },
               { label: "持续完善中", title: "鉴别复核辅助", color: "bg-teal-100 text-teal-700" },
               { label: "拓展方向演示", title: "现场核查辅助", color: "bg-emerald-100/50 text-emerald-600/50" },
-              { label: "长期目标", title: "全过程危废管理智能体", color: "bg-emerald-50/50 text-emerald-600/40" },
+              { label: "长期目标", title: "全过程危废合规审查", color: "bg-emerald-50/50 text-emerald-600/40" },
             ].map((item) => (
               <div key={item.title} className="rounded-xl border border-emerald-200 bg-white p-4 text-center">
                 <div className={`inline-flex rounded-full px-2.5 py-0.5 text-[10px] font-medium ${item.color}`}>{item.label}</div>
