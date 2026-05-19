@@ -320,7 +320,7 @@ function CountUpStat({ num, suffix, label }: { num: number; suffix: string; labe
   return (
     <div ref={ref}>
       <div className="text-3xl font-bold text-emerald-800 md:text-4xl">{count}{suffix}</div>
-      <div className="mt-1 text-xs text-emerald-700/40">{label}</div>
+      <div className="mt-1 text-xs text-emerald-700/50">{label}</div>
     </div>
   );
 }
@@ -506,7 +506,7 @@ function HomePage({ setPage }: { setPage: (p: string) => void }) {
               <h2 className="font-display mt-3 text-3xl font-bold text-emerald-950 md:text-4xl">
                 危废规范化管理 + 鉴别复核 双模块审查
               </h2>
-              <div className="mt-8 space-y-4">
+              <div className="mt-10 space-y-4">
                 {[
                   {
                     icon: Cpu,
@@ -548,8 +548,8 @@ function HomePage({ setPage }: { setPage: (p: string) => void }) {
                 <Play className="h-4 w-4" /> 申请试用资格
               </button>
             </div>
-            {/* Right: Roadmap — 并排框 */}
-            <div className="grid grid-cols-2 gap-4">
+            {/* Right: Roadmap — 单列，消除 3 卡孤儿格 */}
+            <div className="grid grid-cols-1 gap-4">
               {[
                 { label: "R1", title: "台账智能审查 · 跨资料一致性比对", status: "done" },
                 { label: "R2", title: "现场核查（OCR+视觉）· 鉴别复核辅助", status: "progress" },
@@ -613,7 +613,7 @@ function HomePage({ setPage }: { setPage: (p: string) => void }) {
       {/* owner-confirmed: 500+ 服务企业（广州市亿点环保有限公司法定代表人口径） */}
       <section className="border-t border-emerald-100 bg-white py-16">
         <div className="mx-auto max-w-5xl px-6">
-          <div className="grid grid-cols-2 gap-12 max-w-sm mx-auto text-center">
+          <div className="grid grid-cols-2 gap-8 max-w-xs mx-auto text-center">
             <CountUpStat num={500} suffix="+" label="服务企业" />
             <CountUpStat num={2} suffix="" label="双主模块" />
           </div>
@@ -928,7 +928,7 @@ function ZhiweiPage({ setPage }: { setPage: (p: string) => void }) {
           ].map((cap, idx, arr) => (
             <React.Fragment key={cap}>
               <span className="rounded-lg bg-emerald-50 border border-emerald-200 px-4 py-2 font-medium text-center">{cap}</span>
-              {idx < arr.length - 1 && <ChevronRight className="h-4 w-4 text-emerald-400" />}
+              {idx < arr.length - 1 && <ChevronRight className="hidden sm:block h-4 w-4 text-emerald-400" />}
             </React.Fragment>
           ))}
         </div>
@@ -1384,7 +1384,7 @@ function Footer({ setPage }: { setPage: (p: string) => void }) {
           <p className="mt-3 text-xs leading-6 text-emerald-800/50">
             知微见著 · 洞察每一点价值
           </p>
-          <p className="mt-2 max-w-md text-xs leading-5 text-emerald-800/35">
+          <p className="mt-2 max-w-md text-xs leading-5 text-emerald-800/40">
             本产品为 AI 辅助参考工具，不构成行政执法决定，最终以专家核查为准。
           </p>
         </div>
