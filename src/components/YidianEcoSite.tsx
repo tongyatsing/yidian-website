@@ -36,13 +36,13 @@ const contactInfo = [
 ];
 
 const navItems: [string, string][] = [
-  ["home", "首页"], ["about", "关于我们"], ["services", "服务范围"],
-  ["cases", "项目案例"], ["zhiwei", "知微智能体"], ["demo", "产品演示"],
+  ["home", "首页"], ["zhiwei", "产品能力"], ["services", "环保咨询"],
+  ["cases", "应用案例"], ["about", "关于亿点"], ["demo", "产品演示"],
   ["contact", "联系我们"],
 ];
 
-const btnPrimary = "rounded-full bg-gradient-to-r from-emerald-700 to-teal-600 text-sm font-medium text-white transition hover:from-emerald-800 hover:to-teal-700";
-const btnSecondary = "rounded-full border border-emerald-200 bg-white text-sm font-medium text-emerald-800 transition hover:bg-emerald-50";
+const btnPrimary = "rounded-full bg-brand-gradient text-sm font-medium text-white transition hover:opacity-90";
+const btnSecondary = "rounded-full border border-brand-border bg-white text-sm font-medium text-brand-ink transition hover:bg-brand-surface";
 const CURRENT_YEAR = new Date().getFullYear();
 
 const professionalCases = [
@@ -53,7 +53,7 @@ const professionalCases = [
       { value: "12", unit: "个", label: "覆盖工业园区" },
       { value: "98%", unit: "", label: "指标达标率" },
     ],
-    tags: ["政府技术支撑", "无废城市"],
+    tags: ["技术服务", "区域治理"],
   },
   {
     title: "某区无废社区示范项目",
@@ -62,7 +62,7 @@ const professionalCases = [
       { value: "6", unit: "个", label: "试点社区" },
       { value: "3", unit: "套", label: "可复制方案" },
     ],
-    tags: ["社区场景", "示范推广"],
+    tags: ["示范项目", "可复制方案"],
   },
   {
     title: "某县低碳示范创建",
