@@ -226,7 +226,7 @@ function TopNav({ page, setPage }: { page: string; setPage: (p: string) => void 
   const items = navItems;
 
   const bg = scrolled || menuOpen
-    ? "bg-white/90 backdrop-blur-xl border-b border-emerald-100 shadow-sm"
+    ? "bg-white/90 backdrop-blur-xl border-b border-brand-border shadow-sm"
     : "bg-transparent";
 
   const navigateTo = (p: string) => { setPage(p); setMenuOpen(false); };
@@ -234,10 +234,10 @@ function TopNav({ page, setPage }: { page: string; setPage: (p: string) => void 
   return (
     <header className={`fixed top-0 z-50 w-full transition-all duration-500 ${bg}`}>
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-        <button onClick={() => navigateTo("home")} className="flex items-center gap-3 text-emerald-900">
+        <button onClick={() => navigateTo("home")} className="flex items-center gap-3 text-brand-ink">
           <LogoMark className="h-7 w-7" />
           <div>
-            <div className="text-[10px] tracking-[0.3em] uppercase text-emerald-600">ZHIWEI</div>
+            <div className="text-[10px] tracking-[0.3em] uppercase text-[#05B27D]">ZHIWEI</div>
             <div className="text-sm font-semibold">亿点环保</div>
           </div>
         </button>
@@ -245,7 +245,7 @@ function TopNav({ page, setPage }: { page: string; setPage: (p: string) => void 
           {items.map(([key, label]) => (
             <button key={key} onClick={() => navigateTo(key)}
               className={`text-sm transition-colors duration-200 ${
-                page === key ? "font-semibold text-emerald-900" : "text-emerald-700/60 hover:text-emerald-900"
+                page === key ? "font-semibold text-brand-ink" : "text-brand-muted hover:text-brand-ink"
               }`}>
               {label}
             </button>
@@ -253,30 +253,30 @@ function TopNav({ page, setPage }: { page: string; setPage: (p: string) => void 
         </nav>
         <div className="flex items-center gap-3">
           <button onClick={() => navigateTo("demo")}
-            className="hidden sm:block rounded-full bg-gradient-to-r from-emerald-700 to-teal-600 px-5 py-2 text-sm font-medium text-white transition hover:from-emerald-800 hover:to-teal-700">
+            className="hidden sm:block rounded-full bg-brand-gradient px-5 py-2 text-sm font-medium text-white transition hover:opacity-90">
             立即体验
           </button>
           {/* Mobile hamburger */}
           <button onClick={() => setMenuOpen(!menuOpen)} aria-label={menuOpen ? "关闭菜单" : "打开菜单"} className="lg:hidden flex flex-col gap-1.5 p-1">
-            <span className={`block h-0.5 w-5 bg-emerald-800 transition-transform ${menuOpen ? "rotate-45 translate-y-2" : ""}`} />
-            <span className={`block h-0.5 w-5 bg-emerald-800 transition-opacity ${menuOpen ? "opacity-0" : ""}`} />
-            <span className={`block h-0.5 w-5 bg-emerald-800 transition-transform ${menuOpen ? "-rotate-45 -translate-y-2" : ""}`} />
+            <span className={`block h-0.5 w-5 bg-brand-ink transition-transform ${menuOpen ? "rotate-45 translate-y-2" : ""}`} />
+            <span className={`block h-0.5 w-5 bg-brand-ink transition-opacity ${menuOpen ? "opacity-0" : ""}`} />
+            <span className={`block h-0.5 w-5 bg-brand-ink transition-transform ${menuOpen ? "-rotate-45 -translate-y-2" : ""}`} />
           </button>
         </div>
       </div>
       {/* Mobile menu */}
       {menuOpen && (
-        <div className="lg:hidden border-t border-emerald-100 bg-white px-6 py-4 space-y-1">
+        <div className="lg:hidden border-t border-brand-border bg-white px-6 py-4 space-y-1">
           {items.map(([key, label]) => (
             <button key={key} onClick={() => navigateTo(key)}
               className={`block w-full text-left py-2.5 text-sm transition ${
-                page === key ? "font-semibold text-emerald-900" : "text-emerald-700/60"
+                page === key ? "font-semibold text-brand-ink" : "text-brand-muted"
               }`}>
               {label}
             </button>
           ))}
           <button onClick={() => navigateTo("demo")}
-            className="mt-2 block w-full text-center rounded-full bg-gradient-to-r from-emerald-700 to-teal-600 py-2.5 text-sm font-medium text-white">
+            className="mt-2 block w-full text-center rounded-full bg-brand-gradient py-2.5 text-sm font-medium text-white">
             立即体验
           </button>
         </div>
@@ -319,8 +319,8 @@ function CountUpStat({ num, suffix, label }: { num: number; suffix: string; labe
   const { count, ref } = useCountUp(num, 1800);
   return (
     <div ref={ref}>
-      <div className="text-3xl font-bold text-emerald-800 md:text-4xl">{count}{suffix}</div>
-      <div className="mt-1 text-xs text-emerald-700/50">{label}</div>
+      <div className="text-5xl font-bold text-brand-ink md:text-6xl">{count}<span className="text-brand-gradient">{suffix}</span></div>
+      <div className="mt-2 text-sm text-brand-muted">{label}</div>
     </div>
   );
 }
@@ -333,22 +333,18 @@ function HomePage({ setPage }: { setPage: (p: string) => void }) {
   return (
     <div>
       {/* ── Hero ── */}
-      <section className="relative min-h-screen overflow-hidden bg-gradient-to-b from-emerald-50/80 via-white to-white">
-        <div className="pointer-events-none absolute -top-32 left-1/4 h-[500px] w-[500px] rounded-full bg-emerald-300/30 blur-[100px]" />
-        <div className="pointer-events-none absolute top-20 right-1/4 h-[400px] w-[400px] rounded-full bg-sky-200/20 blur-[120px]" />
-        <div className="pointer-events-none absolute top-1/3 left-1/2 -translate-x-1/2 h-[300px] w-[300px] rounded-full bg-teal-300/20 blur-[80px]" />
-        <div className="pointer-events-none absolute inset-0 opacity-40"
-          style={{ backgroundImage: `radial-gradient(circle, #d1fae5 1px, transparent 1px)`, backgroundSize: "32px 32px" }} />
-        <div className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 h-[500px] w-[800px] rounded-full bg-emerald-200/40 blur-[120px]" />
+      <section className="relative min-h-screen overflow-hidden bg-white">
+        <div className="pointer-events-none absolute inset-0 opacity-[0.03]"
+          style={{ backgroundImage: `radial-gradient(circle, #1A1A1A 1px, transparent 1px)`, backgroundSize: "32px 32px" }} />
 
         <div className="relative mx-auto flex min-h-[calc(100vh-2rem)] max-w-7xl flex-col items-center justify-center px-6 pt-24 pb-8 md:min-h-screen md:pt-20 md:pb-0">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-white px-5 py-2.5 text-sm text-emerald-700 shadow-sm"
+            className="inline-flex items-center gap-2 rounded-full border border-brand-border bg-white px-5 py-2.5 text-sm text-brand-muted shadow-[0_1px_2px_rgba(0,0,0,0.06)]"
           >
-            <BadgeCheck className="h-4 w-4 text-emerald-500" />
+            <BadgeCheck className="h-4 w-4 text-[#05B27D]" />
             危废规范化管理 · 鉴别复核 · 全程本地可控
           </motion.div>
 
@@ -358,12 +354,10 @@ function HomePage({ setPage }: { setPage: (p: string) => void }) {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="mt-8 max-w-4xl text-center"
           >
-            <h1 className="font-display text-5xl font-bold leading-tight text-emerald-950 md:text-7xl lg:text-8xl">
-              <span className="bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent">
-                危废合规，见微知著。
-              </span>
+            <h1 className="text-5xl font-bold leading-[1.08] tracking-tight text-brand-ink text-balance sm:text-6xl lg:text-7xl lg:whitespace-nowrap">
+              <span>危废合规，见微知著<span className="text-brand-gradient">。</span></span>
             </h1>
-            <p className="mt-4 text-lg text-emerald-800/50 md:text-xl tracking-wide">
+            <p className="mt-5 text-lg text-brand-muted md:text-xl tracking-wide">
               知微知彰，知柔知刚 —— 《易经·系辞》
             </p>
           </motion.div>
@@ -372,7 +366,7 @@ function HomePage({ setPage }: { setPage: (p: string) => void }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.5 }}
-            className="mt-8 text-center text-sm leading-8 text-emerald-900/70 md:text-base"
+            className="mt-6 text-center text-sm leading-8 text-brand-muted md:text-base max-w-2xl"
           >
             知微是危险废物规范化管理与鉴别复核的智能审查助手——在海量台账、申报、联单与鉴别报告中，主动发现关键偏差与证据缺口。
           </motion.p>
@@ -384,11 +378,11 @@ function HomePage({ setPage }: { setPage: (p: string) => void }) {
             className="mt-8 flex flex-wrap justify-center gap-4"
           >
             <button onClick={() => setPage("contact")}
-              className="flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald-700 to-teal-600 px-8 py-3.5 font-medium text-white shadow-lg shadow-teal-700/20 transition hover:from-emerald-800 hover:to-teal-700">
+              className="flex items-center gap-2 rounded-full bg-brand-gradient px-8 py-3.5 font-medium text-white shadow-lg shadow-black/10 transition hover:opacity-90">
               申请试用资格 <ChevronRight className="h-4 w-4" />
             </button>
             <button onClick={() => setPage("demo")}
-              className="flex items-center gap-2 rounded-full border border-emerald-200 bg-white px-8 py-3.5 font-medium text-emerald-800 transition hover:bg-emerald-50">
+              className="flex items-center gap-2 rounded-full border border-brand-border bg-white px-8 py-3.5 font-medium text-brand-ink transition hover:bg-brand-surface">
               <Play className="h-4 w-4" /> 预约演示
             </button>
           </motion.div>
@@ -400,60 +394,60 @@ function HomePage({ setPage }: { setPage: (p: string) => void }) {
             transition={{ duration: 0.8, delay: 1.1 }}
             className="mt-16 w-full max-w-5xl"
           >
-            <div className="rounded-2xl border border-emerald-200 bg-white p-1.5 shadow-2xl shadow-emerald-200/30">
-              <div className="flex items-center gap-2 rounded-t-xl bg-emerald-50 px-4 py-3">
+            <div className="rounded-2xl border border-brand-border bg-white p-1.5 shadow-2xl shadow-black/[0.08]">
+              <div className="flex items-center gap-2 rounded-t-xl bg-brand-surface px-4 py-3">
                 <div className="flex gap-1.5">
                   <div className="h-3 w-3 rounded-full bg-red-400" />
                   <div className="h-3 w-3 rounded-full bg-amber-400" />
                   <div className="h-3 w-3 rounded-full bg-green-400" />
                 </div>
-                <div className="mx-auto rounded-lg bg-white px-4 py-1 text-xs text-emerald-600 border border-emerald-100">
+                <div className="mx-auto rounded-lg bg-white px-4 py-1 text-xs text-brand-muted border border-brand-border">
                   trial.yidiancst.ai — 知微
                 </div>
               </div>
-              <div className="rounded-b-xl bg-gradient-to-b from-emerald-50/50 to-white p-4 md:p-8">
+              <div className="rounded-b-xl bg-white p-4 md:p-8">
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-4">
-                  <div className="rounded-xl border border-emerald-100 bg-white p-4 shadow-sm">
+                  <div className="rounded-xl border border-brand-border bg-white p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
                     <div className="flex items-center gap-2 mb-2">
-                      <div className="flex h-7 w-7 items-center justify-center rounded-md bg-emerald-100 text-emerald-600"><FileText className="h-3.5 w-3.5" /></div>
-                      <div className="text-xs font-semibold text-emerald-950 md:text-[11px]">资料审查</div>
+                      <div className="flex h-7 w-7 items-center justify-center rounded-md bg-brand-surface text-[#05B27D]"><FileText className="h-3.5 w-3.5" /></div>
+                      <div className="text-xs font-semibold text-brand-ink md:text-[11px]">资料审查</div>
                     </div>
-                    <div className="h-1.5 w-full rounded-full bg-emerald-100"><div className="h-1.5 w-[95%] rounded-full bg-emerald-500" /></div>
-                    <div className="mt-1.5 text-xs text-emerald-600 md:text-[10px]">156 条记录 · 5 项发现</div>
+                    <div className="h-1.5 w-full rounded-full bg-brand-surface"><div className="h-1.5 w-[95%] rounded-full bg-[#05B27D]" /></div>
+                    <div className="mt-1.5 text-xs text-brand-muted md:text-[10px]">156 条记录 · 5 项发现</div>
                   </div>
-                  <div className="rounded-xl border border-emerald-100 bg-white p-4 shadow-sm">
+                  <div className="rounded-xl border border-brand-border bg-white p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
                     <div className="flex items-center gap-2 mb-2">
-                      <div className="flex h-7 w-7 items-center justify-center rounded-md bg-teal-100 text-teal-600"><ShieldAlert className="h-3.5 w-3.5" /></div>
-                      <div className="text-xs font-semibold text-emerald-950 md:text-[11px]">跨资料比对</div>
+                      <div className="flex h-7 w-7 items-center justify-center rounded-md bg-brand-surface text-[#05B27D]"><ShieldAlert className="h-3.5 w-3.5" /></div>
+                      <div className="text-xs font-semibold text-brand-ink md:text-[11px]">跨资料比对</div>
                     </div>
                     <div className="flex gap-1">
                       <span className="rounded bg-red-50 px-1.5 py-0.5 text-xs text-red-600 font-medium md:text-[10px]">高 3</span>
                       <span className="rounded bg-amber-50 px-1.5 py-0.5 text-xs text-amber-600 font-medium md:text-[10px]">中 2</span>
                     </div>
-                    <div className="mt-1.5 text-xs text-emerald-600 md:text-[10px]">台账 × 许可 × 环评</div>
+                    <div className="mt-1.5 text-xs text-brand-muted md:text-[10px]">台账 × 许可 × 环评</div>
                   </div>
-                  <div className="rounded-xl border border-emerald-100 bg-white p-4 shadow-sm">
+                  <div className="rounded-xl border border-brand-border bg-white p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
                     <div className="flex items-center gap-2 mb-2">
-                      <div className="flex h-7 w-7 items-center justify-center rounded-md bg-emerald-100 text-emerald-600"><Search className="h-3.5 w-3.5" /></div>
-                      <div className="text-xs font-semibold text-emerald-950 md:text-[11px]">鉴别复核</div>
+                      <div className="flex h-7 w-7 items-center justify-center rounded-md bg-brand-surface text-[#05B27D]"><Search className="h-3.5 w-3.5" /></div>
+                      <div className="text-xs font-semibold text-brand-ink md:text-[11px]">鉴别复核</div>
                     </div>
                     <div className="flex items-center gap-1.5">
-                      <span className="text-xs text-emerald-600 md:text-[10px]">问题树 8 棵</span>
-                      <span className="text-emerald-300">·</span>
-                      <span className="text-xs text-emerald-600 md:text-[10px]">证据链追溯</span>
+                      <span className="text-xs text-brand-muted md:text-[10px]">问题树 8 棵</span>
+                      <span className="text-brand-border">·</span>
+                      <span className="text-xs text-brand-muted md:text-[10px]">证据链追溯</span>
                     </div>
-                    <div className="mt-1.5 text-xs text-emerald-600 md:text-[10px]">专家初审辅助</div>
+                    <div className="mt-1.5 text-xs text-brand-muted md:text-[10px]">专家初审辅助</div>
                   </div>
-                  <div className="rounded-xl border border-emerald-100 bg-white p-4 shadow-sm">
+                  <div className="rounded-xl border border-brand-border bg-white p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
                     <div className="flex items-center gap-2 mb-2">
-                      <div className="flex h-7 w-7 items-center justify-center rounded-md bg-emerald-100 text-emerald-600"><Camera className="h-3.5 w-3.5" /></div>
-                      <div className="text-xs font-semibold text-emerald-950 md:text-[11px]">现场核查</div>
+                      <div className="flex h-7 w-7 items-center justify-center rounded-md bg-brand-surface text-[#05B27D]"><Camera className="h-3.5 w-3.5" /></div>
+                      <div className="text-xs font-semibold text-brand-ink md:text-[11px]">现场核查</div>
                     </div>
                     <div className="flex items-center gap-1.5">
-                      <Eye className="h-2.5 w-2.5 text-emerald-500" />
-                      <span className="text-xs text-emerald-600 md:text-[10px]">OCR + 视觉双通道</span>
+                      <Eye className="h-2.5 w-2.5 text-[#05B27D]" />
+                      <span className="text-xs text-brand-muted md:text-[10px]">OCR + 视觉双通道</span>
                     </div>
-                    <div className="mt-1.5 text-xs text-emerald-600 md:text-[10px]">8 张照片 · 6 项发现</div>
+                    <div className="mt-1.5 text-xs text-brand-muted md:text-[10px]">8 张照片 · 6 项发现</div>
                   </div>
                 </div>
               </div>
@@ -463,12 +457,12 @@ function HomePage({ setPage }: { setPage: (p: string) => void }) {
       </section>
 
       {/* ── 核心优势 ── */}
-      <section className="border-t border-emerald-100 bg-white py-24 md:py-32">
+      <section className="border-t border-brand-border bg-brand-surface py-24 md:py-32">
         <div className="mx-auto max-w-7xl px-6">
           <div className="text-center mb-16">
-            <div className="text-xs font-medium tracking-[0.25em] uppercase text-emerald-500">优势 · Strengths</div>
-            <h2 className="font-display mt-3 text-3xl font-bold text-emerald-950 md:text-4xl">知微的核心优势</h2>
-            <p className="mt-4 text-sm text-emerald-800/50">不只是看见资料，而是看懂问题</p>
+            <div className="text-xs font-medium tracking-[0.25em] uppercase text-[#05B27D]">优势 · Strengths</div>
+            <h2 className="mt-3 text-3xl font-bold text-brand-ink md:text-4xl lg:text-5xl tracking-tight">知微的核心优势</h2>
+            <p className="mt-4 text-sm text-brand-muted">不只是看见资料，而是看懂问题</p>
           </div>
           <div className="grid gap-6 md:grid-cols-4">
             {[
@@ -484,12 +478,12 @@ function HomePage({ setPage }: { setPage: (p: string) => void }) {
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, delay: idx * 0.1 }}
                   viewport={{ once: true }}
-                  className="rounded-xl border border-emerald-100 p-5 text-center transition hover:border-emerald-200 hover:shadow-md">
-                  <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 mb-4">
+                  className="rounded-xl border border-brand-border bg-white p-5 text-center transition hover:shadow-[0_4px_12px_rgba(0,0,0,0.08)] shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+                  <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl bg-brand-surface text-[#05B27D] mb-4">
                     <Icon className="h-5 w-5" />
                   </div>
-                  <h3 className="text-sm font-semibold text-emerald-950">{item.title}</h3>
-                  <p className="mt-1.5 text-xs leading-5 text-emerald-800/50">{item.desc}</p>
+                  <h3 className="text-sm font-semibold text-brand-ink">{item.title}</h3>
+                  <p className="mt-1.5 text-xs leading-5 text-brand-muted">{item.desc}</p>
                 </motion.div>
               );
             })}
@@ -498,12 +492,12 @@ function HomePage({ setPage }: { setPage: (p: string) => void }) {
       </section>
 
       {/* ── 知微产品 + 路线图 ── */}
-      <section className="border-t border-emerald-100 bg-emerald-50/40 py-24 md:py-32">
+      <section className="border-t border-brand-border bg-white py-24 md:py-32">
         <div className="mx-auto max-w-7xl px-6">
           <div className="grid items-center gap-16 md:grid-cols-2">
             <div>
-              <div className="text-xs font-medium tracking-[0.25em] uppercase text-emerald-500">知微 · Zhīwēi</div>
-              <h2 className="font-display mt-3 text-3xl font-bold text-emerald-950 md:text-4xl">
+              <div className="text-xs font-medium tracking-[0.25em] uppercase text-[#05B27D]">知微 · Zhīwēi</div>
+              <h2 className="mt-3 text-3xl font-bold text-brand-ink md:text-4xl lg:text-5xl tracking-tight">
                 危废规范化管理 + 鉴别复核 双模块审查
               </h2>
               <div className="mt-10 space-y-4">
@@ -531,20 +525,20 @@ function HomePage({ setPage }: { setPage: (p: string) => void }) {
                 ].map((p) => {
                   const Icon = p.icon;
                   return (
-                    <div key={p.title} className="flex items-start gap-4 rounded-xl border border-emerald-200 bg-white p-4 transition hover:shadow-sm">
-                      <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 flex-shrink-0">
+                    <div key={p.title} className="flex items-start gap-4 rounded-xl border border-brand-border bg-white p-4 transition hover:shadow-[0_2px_8px_rgba(0,0,0,0.06)] shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+                      <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-surface text-[#05B27D] flex-shrink-0">
                         <Icon className="h-4 w-4" />
                       </div>
                       <div>
-                        <div className="text-sm font-semibold text-emerald-950">{p.title}</div>
-                        <div className="mt-1 text-xs leading-6 text-emerald-800/50">{p.desc}</div>
+                        <div className="text-sm font-semibold text-brand-ink">{p.title}</div>
+                        <div className="mt-1 text-xs leading-6 text-brand-muted">{p.desc}</div>
                       </div>
                     </div>
                   );
                 })}
               </div>
               <button onClick={() => setPage("contact")}
-                className="mt-8 flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald-700 to-teal-600 px-6 py-2.5 text-sm font-medium text-white transition hover:from-emerald-800 hover:to-teal-700">
+                className="mt-8 flex items-center gap-2 rounded-full bg-brand-gradient px-6 py-2.5 text-sm font-medium text-white transition hover:opacity-90">
                 <Play className="h-4 w-4" /> 申请试用资格
               </button>
             </div>
@@ -561,22 +555,22 @@ function HomePage({ setPage }: { setPage: (p: string) => void }) {
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, delay: idx * 0.1 }}
                   viewport={{ once: true }}
-                  className="rounded-xl border border-emerald-200 bg-white p-5 transition hover:shadow-sm"
+                  className="rounded-xl border border-brand-border bg-white p-5 transition hover:shadow-[0_2px_8px_rgba(0,0,0,0.06)] shadow-[0_1px_2px_rgba(0,0,0,0.04)]"
                 >
                   <div className={`flex h-10 w-10 items-center justify-center rounded-lg text-sm font-bold ${
                     item.status === "done"
-                      ? "bg-gradient-to-br from-emerald-700 to-teal-600 text-white"
+                      ? "bg-brand-gradient text-white"
                       : item.status === "progress"
-                      ? "bg-gradient-to-br from-teal-500 to-emerald-500 text-white"
-                      : "bg-gradient-to-br from-teal-400 to-sky-400 text-white"
+                      ? "bg-brand-surface text-[#05B27D] border border-[#05B27D]/20"
+                      : "bg-brand-surface text-brand-muted border border-brand-border"
                   }`}>{item.label}</div>
                   <div className="mt-3 flex items-center gap-2">
-                    <span className="text-sm font-semibold text-emerald-950">{item.title}</span>
+                    <span className="text-sm font-semibold text-brand-ink">{item.title}</span>
                   </div>
                   <div className="mt-1">
-                    {item.status === "done" && <span className="text-[10px] text-emerald-500 bg-emerald-50 rounded-full px-2 py-0.5">已上线</span>}
-                    {item.status === "progress" && <span className="text-[10px] text-teal-600 bg-teal-50 rounded-full px-2 py-0.5">完善中</span>}
-                    {item.status === "next" && <span className="text-[10px] text-white bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full px-2 py-0.5">持续演进</span>}
+                    {item.status === "done" && <span className="text-[10px] text-[#05B27D] bg-brand-surface rounded-full px-2 py-0.5">已上线</span>}
+                    {item.status === "progress" && <span className="text-[10px] text-brand-muted bg-brand-surface rounded-full px-2 py-0.5">完善中</span>}
+                    {item.status === "next" && <span className="text-[10px] text-brand-muted bg-brand-surface rounded-full px-2 py-0.5">持续演进</span>}
                   </div>
                 </motion.div>
               ))}
@@ -586,22 +580,22 @@ function HomePage({ setPage }: { setPage: (p: string) => void }) {
       </section>
 
       {/* ── 服务 ── */}
-      <section className="border-t border-emerald-100 bg-emerald-50/40 py-24 md:py-32">
+      <section className="border-t border-brand-border bg-brand-surface py-24 md:py-32">
         <div className="mx-auto max-w-7xl px-6">
           <div className="text-center mb-16">
-            <div className="text-xs font-medium tracking-[0.25em] uppercase text-emerald-500">服务 · Services</div>
-            <h2 className="font-display mt-3 text-3xl font-bold text-emerald-950 md:text-4xl">核心服务领域</h2>
+            <div className="text-xs font-medium tracking-[0.25em] uppercase text-[#05B27D]">服务 · Services</div>
+            <h2 className="mt-3 text-3xl font-bold text-brand-ink md:text-4xl lg:text-5xl tracking-tight">核心服务领域</h2>
           </div>
           <div className="grid gap-x-8 gap-y-8 md:gap-y-12 md:grid-cols-2 lg:grid-cols-3">
             {services.slice(0, 6).map((item) => {
               const Icon = item.icon;
               return (
                 <div key={item.title} className="group">
-                  <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 transition group-hover:bg-emerald-100">
+                  <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-white text-[#05B27D] border border-brand-border transition group-hover:border-[#05B27D]/30 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
                     <Icon className="h-5 w-5" />
                   </div>
-                  <h3 className="text-base font-semibold text-emerald-950">{item.title}</h3>
-                  <p className="mt-2 text-sm leading-7 text-emerald-800/50">{item.desc}</p>
+                  <h3 className="text-base font-semibold text-brand-ink">{item.title}</h3>
+                  <p className="mt-2 text-sm leading-7 text-brand-muted">{item.desc}</p>
                 </div>
               );
             })}
@@ -611,9 +605,9 @@ function HomePage({ setPage }: { setPage: (p: string) => void }) {
 
       {/* ── Stats ── */}
       {/* owner-confirmed: 500+ 服务企业（广州市亿点环保有限公司法定代表人口径） */}
-      <section className="border-t border-emerald-100 bg-white py-16">
+      <section className="border-t border-brand-border bg-white py-20">
         <div className="mx-auto max-w-5xl px-6">
-          <div className="grid grid-cols-2 gap-8 max-w-xs mx-auto text-center">
+          <div className="grid grid-cols-2 gap-12 max-w-sm mx-auto text-center">
             <CountUpStat num={500} suffix="+" label="服务企业" />
             <CountUpStat num={2} suffix="" label="双主模块" />
           </div>
@@ -621,12 +615,12 @@ function HomePage({ setPage }: { setPage: (p: string) => void }) {
       </section>
 
       {/* ── 案例 ── */}
-      <section className="border-t border-emerald-100 bg-emerald-50/40 py-24 md:py-32">
+      <section className="border-t border-brand-border bg-brand-surface py-24 md:py-32">
         <div className="mx-auto max-w-7xl px-6">
           <div className="text-center mb-16">
-            <div className="text-xs font-medium tracking-[0.25em] uppercase text-emerald-500">案例 · Cases</div>
-            <h2 className="font-display mt-3 text-3xl font-bold text-emerald-950 md:text-4xl">公司技术服务实绩</h2>
-            <p className="mt-4 text-sm text-emerald-800/60 max-w-2xl mx-auto">已为地市级生态环境主管部门提供危险废物规范化管理评估技术支撑，并服务于产废企业与危废服务商。</p>
+            <div className="text-xs font-medium tracking-[0.25em] uppercase text-[#05B27D]">案例 · Cases</div>
+            <h2 className="mt-3 text-3xl font-bold text-brand-ink md:text-4xl lg:text-5xl tracking-tight">公司技术服务实绩</h2>
+            <p className="mt-4 text-sm text-brand-muted max-w-2xl mx-auto">已为地市级生态环境主管部门提供危险废物规范化管理评估技术支撑，并服务于产废企业与危废服务商。</p>
           </div>
           <div className="grid gap-8 md:grid-cols-3">
             {professionalCases.map((item, idx) => (
@@ -636,20 +630,20 @@ function HomePage({ setPage }: { setPage: (p: string) => void }) {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: idx * 0.1 }}
                 viewport={{ once: true }}
-                className="group rounded-xl border border-emerald-100 bg-white p-6 transition hover:border-emerald-200 hover:shadow-md"
+                className="group rounded-xl border border-brand-border bg-white p-6 transition hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] shadow-[0_1px_2px_rgba(0,0,0,0.04)]"
               >
                 <div className="flex flex-wrap gap-1.5 mb-3">
                   {item.tags.map((tag) => (
-                    <span key={tag} className="rounded-full bg-emerald-50 px-2.5 py-0.5 text-[10px] font-medium text-emerald-600">{tag}</span>
+                    <span key={tag} className="rounded-full bg-brand-surface border border-brand-border px-2.5 py-0.5 text-[10px] font-medium text-[#05B27D]">{tag}</span>
                   ))}
                 </div>
-                <h3 className="text-base font-semibold text-emerald-950">{item.title}</h3>
-                <p className="mt-2 text-sm leading-7 text-emerald-800/50">{item.desc}</p>
-                <div className="mt-4 flex gap-4 border-t border-emerald-50 pt-4">
+                <h3 className="text-base font-semibold text-brand-ink">{item.title}</h3>
+                <p className="mt-2 text-sm leading-7 text-brand-muted">{item.desc}</p>
+                <div className="mt-4 flex gap-4 border-t border-brand-border pt-4">
                   {item.metrics.map((m) => (
                     <div key={m.label}>
-                      <div className="text-lg font-bold text-emerald-700">{m.value}<span className="text-xs font-normal text-emerald-500">{m.unit}</span></div>
-                      <div className="text-[10px] text-emerald-600/50">{m.label}</div>
+                      <div className="text-lg font-bold text-brand-ink">{m.value}<span className="text-xs font-normal text-[#05B27D]">{m.unit}</span></div>
+                      <div className="text-[10px] text-brand-muted">{m.label}</div>
                     </div>
                   ))}
                 </div>
@@ -660,14 +654,14 @@ function HomePage({ setPage }: { setPage: (p: string) => void }) {
       </section>
 
       {/* ── 关于 ── */}
-      <section className="border-t border-emerald-100 bg-white py-20 md:py-24">
+      <section className="border-t border-brand-border bg-white py-20 md:py-24">
         <div className="mx-auto max-w-3xl px-6 text-center">
-          <div className="text-xs font-medium tracking-[0.25em] uppercase text-emerald-500">关于 · About</div>
-          <h2 className="font-display mt-3 text-2xl font-bold text-emerald-950 md:text-3xl">广州市亿点环保有限公司</h2>
-          <p className="mt-5 text-sm leading-8 text-emerald-800/50">
+          <div className="text-xs font-medium tracking-[0.25em] uppercase text-[#05B27D]">关于 · About</div>
+          <h2 className="mt-3 text-2xl font-bold text-brand-ink md:text-3xl tracking-tight">广州市亿点环保有限公司</h2>
+          <p className="mt-5 text-sm leading-8 text-brand-muted">
             亿点环保深耕环保咨询，将一线监管经验沉淀为可复用的审查逻辑——知微，从规范化管理与鉴别复核做起。
           </p>
-          <div className="mt-6 inline-flex flex-wrap justify-center gap-x-4 gap-y-1 text-xs text-emerald-700/60">
+          <div className="mt-6 inline-flex flex-wrap justify-center gap-x-4 gap-y-1 text-xs text-brand-muted">
             <span>软件著作权 5 项</span>
             <span>·</span>
             <span>实用新型专利 8 项</span>
@@ -680,12 +674,12 @@ function HomePage({ setPage }: { setPage: (p: string) => void }) {
       </section>
 
       {/* ── CTA ── */}
-      <section className="border-t border-emerald-100 bg-emerald-50/40 py-24 md:py-28">
+      <section className="border-t border-brand-border bg-brand-surface py-24 md:py-28">
         <div className="mx-auto max-w-2xl px-6 text-center">
-          <h2 className="font-display text-2xl font-bold text-emerald-950 md:text-4xl leading-tight">
+          <h2 className="text-2xl font-bold text-brand-ink md:text-4xl leading-tight tracking-tight">
             把合规细节交给知微，把判断留给你。
           </h2>
-          <p className="mt-4 text-sm text-emerald-800/50">
+          <p className="mt-4 text-sm text-brand-muted">
             交流危废规范化管理与鉴别复核的产品演示与合作，我们随时在。
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-4">
@@ -713,16 +707,16 @@ function AboutPage() {
   return (
     <div className="min-h-screen bg-white pt-28 pb-20">
       <div className="mx-auto max-w-7xl px-6">
-        <div className="text-xs font-medium tracking-[0.25em] uppercase text-emerald-600">关于 · About</div>
-        <h2 className="font-display mt-4 text-3xl font-bold text-emerald-950 md:text-5xl">关于我们</h2>
-        <p className="mt-6 max-w-3xl text-base leading-8 text-emerald-800/60">
+        <div className="text-xs font-medium tracking-[0.25em] uppercase text-[#05B27D]">关于 · About</div>
+        <h2 className="mt-4 text-3xl font-bold text-brand-ink md:text-5xl tracking-tight">关于我们</h2>
+        <p className="mt-6 max-w-3xl text-base leading-8 text-brand-muted">
           广州市亿点环保有限公司专注于环保咨询服务与环保数字化能力建设，致力于以专业技术经验和智能审查工具，服务企业环保合规管理与复杂资料审查场景。
         </p>
 
         {/* 我们的定位 */}
         <div className="mt-16">
-          <h3 className="text-2xl font-bold text-emerald-950">我们的定位</h3>
-          <p className="mt-4 max-w-3xl text-sm leading-8 text-emerald-800/60">
+          <h3 className="text-2xl font-bold text-brand-ink">我们的定位</h3>
+          <p className="mt-4 max-w-3xl text-sm leading-8 text-brand-muted">
             亿点环保立足环保专业服务，同时持续推进危险废物管理场景的数字化能力建设。
             我们关注的不只是资料是否齐全，更关注资料能否支撑判断、问题能否追溯依据、审查结果能否被复核。
             知微正是在这一思路下形成的专业智能审查产品。
@@ -731,8 +725,8 @@ function AboutPage() {
 
         {/* 我们的能力 */}
         <div className="mt-12">
-          <h3 className="text-2xl font-bold text-emerald-950">我们的能力</h3>
-          <p className="mt-4 max-w-3xl text-sm leading-8 text-emerald-800/60">
+          <h3 className="text-2xl font-bold text-brand-ink">我们的能力</h3>
+          <p className="mt-4 max-w-3xl text-sm leading-8 text-brand-muted">
             公司拥有环境影响评价、排污许可、危废管理、清洁生产等领域的咨询经验，
             在此基础上，将规则体系、专业审查经验与智能识别能力结合，逐步形成知微这一面向危险废物资料审查与鉴别复核辅助场景的智能产品。
           </p>
@@ -743,8 +737,8 @@ function AboutPage() {
               "知微智能体持续迭代",
               "广州总部服务珠三角",
             ].map((item) => (
-              <div key={item} className="rounded-xl border border-emerald-200 bg-emerald-50/50 p-5 text-center">
-                <p className="text-sm font-medium text-emerald-800">{item}</p>
+              <div key={item} className="rounded-xl border border-brand-border bg-brand-surface p-5 text-center shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+                <p className="text-sm font-medium text-brand-ink">{item}</p>
               </div>
             ))}
           </div>
@@ -752,23 +746,23 @@ function AboutPage() {
 
         {/* 当前产品进展 */}
         <div className="mt-16">
-          <h3 className="text-2xl font-bold text-emerald-950">当前产品进展</h3>
+          <h3 className="text-2xl font-bold text-brand-ink">当前产品进展</h3>
           <div className="mt-8 grid gap-6 md:grid-cols-3">
-            <div className="rounded-2xl border border-emerald-200 bg-white p-6">
-              <h4 className="text-base font-semibold text-emerald-950">主线能力持续稳定</h4>
-              <p className="mt-3 text-sm leading-7 text-emerald-800/60">
+            <div className="rounded-2xl border border-brand-border bg-white p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+              <h4 className="text-base font-semibold text-brand-ink">主线能力持续稳定</h4>
+              <p className="mt-3 text-sm leading-7 text-brand-muted">
                 围绕跨资料一致性比对场景，持续打磨资料读取、字段抽取、对象对齐、问题发现与结构化输出能力。
               </p>
             </div>
-            <div className="rounded-2xl border border-emerald-200 bg-white p-6">
-              <h4 className="text-base font-semibold text-emerald-950">专业审查能力持续增强</h4>
-              <p className="mt-3 text-sm leading-7 text-emerald-800/60">
+            <div className="rounded-2xl border border-brand-border bg-white p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+              <h4 className="text-base font-semibold text-brand-ink">专业审查能力持续增强</h4>
+              <p className="mt-3 text-sm leading-7 text-brand-muted">
                 围绕鉴别复核场景，持续完善全文读取、问题树扫描、证据包构建与专家复核表达能力。
               </p>
             </div>
-            <div className="rounded-2xl border border-emerald-200 bg-white p-6">
-              <h4 className="text-base font-semibold text-emerald-950">部署与安全能力持续加强</h4>
-              <p className="mt-3 text-sm leading-7 text-emerald-800/60">
+            <div className="rounded-2xl border border-brand-border bg-white p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+              <h4 className="text-base font-semibold text-brand-ink">部署与安全能力持续加强</h4>
+              <p className="mt-3 text-sm leading-7 text-brand-muted">
                 持续完善本地部署、服务端代理、访问鉴权、限流与错误脱敏等安全机制，提升演示和实际交付的可控性。
               </p>
             </div>
@@ -780,10 +774,10 @@ function AboutPage() {
           {contactInfo.map((item) => {
             const Icon = item.icon;
             return (
-              <div key={item.text} className="rounded-2xl border border-emerald-200 bg-white p-6">
-                <Icon className="h-5 w-5 text-emerald-600" />
-                <div className="mt-4 text-xs text-emerald-600">{item.label}</div>
-                <div className="mt-1 font-medium text-emerald-950">{item.text}</div>
+              <div key={item.text} className="rounded-2xl border border-brand-border bg-white p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+                <Icon className="h-5 w-5 text-[#05B27D]" />
+                <div className="mt-4 text-xs text-brand-muted">{item.label}</div>
+                <div className="mt-1 font-medium text-brand-ink">{item.text}</div>
               </div>
             );
           })}
@@ -801,25 +795,25 @@ function ServicesPage() {
   return (
     <div className="min-h-screen bg-white pt-28 pb-20">
       <div className="mx-auto max-w-7xl px-6">
-        <div className="text-xs font-medium tracking-[0.25em] uppercase text-emerald-600">服务 · Services</div>
-        <h2 className="font-display mt-4 text-3xl font-bold text-emerald-950 md:text-5xl">服务范围</h2>
-        <p className="mt-4 text-base text-emerald-800/60">覆盖环保合规管理与专业技术服务的多场景支撑能力</p>
-        <p className="mt-4 max-w-3xl text-sm leading-7 text-emerald-800/50">
+        <div className="text-xs font-medium tracking-[0.25em] uppercase text-[#05B27D]">服务 · Services</div>
+        <h2 className="mt-4 text-3xl font-bold text-brand-ink md:text-5xl tracking-tight">服务范围</h2>
+        <p className="mt-4 text-base text-brand-muted">覆盖环保合规管理与专业技术服务的多场景支撑能力</p>
+        <p className="mt-4 max-w-3xl text-sm leading-7 text-brand-muted">
           公司提供环保专业咨询服务，并可结合知微智能体能力，辅助开展危险废物资料审查、跨资料一致性核查与复核辅助。
         </p>
         <div className="mt-12 grid gap-4 lg:grid-cols-3">
           {services.map((item) => {
             const Icon = item.icon;
             return (
-              <div key={item.title} className="rounded-2xl border border-emerald-200 bg-white p-6 transition hover:shadow-lg">
-                <Icon className="h-6 w-6 text-emerald-600" />
-                <h3 className="mt-5 text-lg font-semibold text-emerald-950">{item.title}</h3>
-                <p className="mt-3 text-sm leading-7 text-emerald-800/60">{item.desc}</p>
+              <div key={item.title} className="rounded-2xl border border-brand-border bg-white p-6 transition hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+                <Icon className="h-6 w-6 text-[#05B27D]" />
+                <h3 className="mt-5 text-lg font-semibold text-brand-ink">{item.title}</h3>
+                <p className="mt-3 text-sm leading-7 text-brand-muted">{item.desc}</p>
               </div>
             );
           })}
         </div>
-        <p className="mt-10 text-center text-sm text-emerald-700/50">
+        <p className="mt-10 text-center text-sm text-brand-muted">
           对涉及复杂资料链、长文本附件和多来源数据的项目，可结合知微开展前置审查与辅助核查。
         </p>
       </div>
@@ -831,39 +825,39 @@ function CasesPage() {
   return (
     <div className="min-h-screen bg-white pt-28 pb-20">
       <div className="mx-auto max-w-7xl px-6">
-        <div className="text-xs font-medium tracking-[0.25em] uppercase text-emerald-600">案例 · Cases</div>
-        <h2 className="font-display mt-4 text-3xl font-bold text-emerald-950 md:text-5xl">项目案例</h2>
-        <p className="mt-4 text-base text-emerald-800/60">专业服务案例与产品验证案例并行展示</p>
+        <div className="text-xs font-medium tracking-[0.25em] uppercase text-[#05B27D]">案例 · Cases</div>
+        <h2 className="mt-4 text-3xl font-bold text-brand-ink md:text-5xl tracking-tight">项目案例</h2>
+        <p className="mt-4 text-base text-brand-muted">专业服务案例与产品验证案例并行展示</p>
 
         {/* 专业服务案例 */}
-        <h3 className="mt-16 text-xl font-bold text-emerald-950">专业服务案例</h3>
+        <h3 className="mt-16 text-xl font-bold text-brand-ink">专业服务案例</h3>
         <div className="mt-8 grid gap-6 md:grid-cols-3">
           {professionalCases.map((item) => (
-            <div key={item.title} className="rounded-2xl border border-emerald-200 bg-white p-6 transition hover:shadow-lg">
+            <div key={item.title} className="rounded-2xl border border-brand-border bg-white p-6 transition hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
               <div className="flex flex-wrap gap-1.5 mb-3">
                 {item.tags.map((tag) => (
-                  <span key={tag} className="rounded-full bg-emerald-50 px-2.5 py-0.5 text-[10px] font-medium text-emerald-600">{tag}</span>
+                  <span key={tag} className="rounded-full bg-brand-surface border border-brand-border px-2.5 py-0.5 text-[10px] font-medium text-[#05B27D]">{tag}</span>
                 ))}
               </div>
-              <h4 className="mt-2 text-lg font-semibold text-emerald-950">{item.title}</h4>
-              <p className="mt-3 text-sm leading-7 text-emerald-800/60">{item.desc}</p>
+              <h4 className="mt-2 text-lg font-semibold text-brand-ink">{item.title}</h4>
+              <p className="mt-3 text-sm leading-7 text-brand-muted">{item.desc}</p>
             </div>
           ))}
         </div>
 
         {/* 产品验证案例 */}
-        <h3 className="mt-16 text-xl font-bold text-emerald-950">产品验证案例</h3>
+        <h3 className="mt-16 text-xl font-bold text-brand-ink">产品验证案例</h3>
         <div className="mt-8 grid gap-6 md:grid-cols-3">
           {productCases.map((item) => (
-            <div key={item.title} className="rounded-2xl border border-emerald-200 bg-white p-6 transition hover:shadow-lg">
+            <div key={item.title} className="rounded-2xl border border-brand-border bg-white p-6 transition hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
               <div className="flex flex-wrap gap-1.5 mb-3">
                 {item.tags.map((tag) => (
-                  <span key={tag} className="rounded-full bg-teal-50 px-2.5 py-0.5 text-[10px] font-medium text-teal-600">{tag}</span>
+                  <span key={tag} className="rounded-full bg-brand-surface border border-brand-border px-2.5 py-0.5 text-[10px] font-medium text-brand-muted">{tag}</span>
                 ))}
               </div>
-              <h4 className="mt-2 text-lg font-semibold text-emerald-950">{item.title}</h4>
-              <p className="mt-3 text-sm leading-7 text-emerald-800/60">{item.desc}</p>
-              <p className="mt-4 text-xs text-emerald-600/40 border-t border-emerald-100 pt-3">
+              <h4 className="mt-2 text-lg font-semibold text-brand-ink">{item.title}</h4>
+              <p className="mt-3 text-sm leading-7 text-brand-muted">{item.desc}</p>
+              <p className="mt-4 text-xs text-brand-muted border-t border-brand-border pt-3">
                 以上为脱敏展示，用于呈现系统能力边界与适用场景，不对应真实企业公开信息。
               </p>
             </div>
@@ -879,78 +873,78 @@ function ZhiweiPage({ setPage }: { setPage: (p: string) => void }) {
     <div className="min-h-screen bg-white pt-28 pb-20">
       <div className="mx-auto max-w-7xl px-6">
         {/* 页头 */}
-        <div className="text-xs font-medium tracking-[0.25em] uppercase text-emerald-600">知微 · ZHIWEI</div>
-        <h2 className="font-display mt-4 text-3xl font-bold text-emerald-950 md:text-5xl">危废规范化管理 + 鉴别复核<br className="hidden md:block" /> 双模块审查助手</h2>
-        <p className="mt-2 text-base text-emerald-800/60">辅助初审，不替代专家最终判定。数据本地，不出域。</p>
-        <p className="mt-6 max-w-3xl text-sm leading-8 text-emerald-800/50">
+        <div className="text-xs font-medium tracking-[0.25em] uppercase text-[#05B27D]">知微 · ZHIWEI</div>
+        <h2 className="mt-4 text-3xl font-bold text-brand-ink md:text-5xl tracking-tight">危废规范化管理 + 鉴别复核<br className="hidden md:block" /> 双模块审查助手</h2>
+        <p className="mt-2 text-base text-brand-muted">辅助初审，不替代专家最终判定。数据本地，不出域。</p>
+        <p className="mt-6 max-w-3xl text-sm leading-8 text-brand-muted">
           知微围绕危险废物合规自查与鉴别复核两类核心场景，跨多份非结构化材料语义对齐，
           定位差距、归集证据、输出可整改底稿。专业判断由人来做，知微让准备工作不再费力。
         </p>
 
         {/* 双主模块 */}
-        <h3 className="mt-16 text-2xl font-bold text-emerald-950">两个主模块</h3>
+        <h3 className="mt-16 text-2xl font-bold text-brand-ink">两个主模块</h3>
         <div className="mt-8 grid gap-6 md:grid-cols-2">
           {/* 模块① */}
-          <div className="rounded-2xl border border-emerald-200 bg-white p-7 transition hover:shadow-lg">
+          <div className="rounded-2xl border border-brand-border bg-white p-7 transition hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
             <div className="flex items-center gap-3 mb-4">
-              <ClipboardCheck className="h-5 w-5 text-emerald-600 flex-shrink-0" />
-              <h4 className="text-base font-semibold text-emerald-950">危废规范化管理 · 合规自查与评估准备</h4>
+              <ClipboardCheck className="h-5 w-5 text-[#05B27D] flex-shrink-0" />
+              <h4 className="text-base font-semibold text-brand-ink">危废规范化管理 · 合规自查与评估准备</h4>
             </div>
-            <p className="text-sm leading-7 text-emerald-800/70">
+            <p className="text-sm leading-7 text-brand-muted">
               对照国家危险废物规范化环境管理评估要求，知微逐项核对台账、申报、转移联单、贮存与标识、管理计划、应急与培训，定位每一处差距与缺证，产出可整改的自查底稿。
             </p>
-            <p className="mt-4 text-xs leading-6 text-emerald-600/80 border-t border-emerald-100 pt-4">
+            <p className="mt-4 text-xs leading-6 text-brand-muted border-t border-brand-border pt-4">
               人工逐档比对难免漏项、口径不一；知微跨多份非结构化材料语义对齐，让全项自查与证据归集第一次成为常态。
             </p>
           </div>
           {/* 模块② */}
-          <div className="rounded-2xl border border-emerald-200 bg-white p-7 transition hover:shadow-lg">
+          <div className="rounded-2xl border border-brand-border bg-white p-7 transition hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
             <div className="flex items-center gap-3 mb-4">
-              <FileSearch className="h-5 w-5 text-emerald-600 flex-shrink-0" />
-              <h4 className="text-base font-semibold text-emerald-950">危废鉴别 · 复核辅助</h4>
+              <FileSearch className="h-5 w-5 text-[#05B27D] flex-shrink-0" />
+              <h4 className="text-base font-semibold text-brand-ink">危废鉴别 · 复核辅助</h4>
             </div>
-            <p className="text-sm leading-7 text-emerald-800/70">
+            <p className="text-sm leading-7 text-brand-muted">
               围绕属性判定与鉴别报告，知微辅助核查采样代表性、检测项目与标准适用性，沿问题树组织证据链。
             </p>
-            <div className="mt-4 rounded-xl border border-red-100 bg-red-50/40 px-4 py-3 text-xs leading-6 text-red-700/70 border-t-0">
+            <div className="mt-4 rounded-xl border border-red-100 bg-red-50/40 px-4 py-3 text-xs leading-6 text-red-700/70">
               知微辅助初审，不替代专家最终判定，不输出执法或定性结论。本产品为 AI 辅助参考工具，不构成行政执法决定，最终以专家核查为准。
             </div>
           </div>
         </div>
 
         {/* 支撑能力 */}
-        <h3 className="mt-16 text-2xl font-bold text-emerald-950">支撑能力</h3>
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-2 text-sm text-emerald-800/70">
+        <h3 className="mt-16 text-2xl font-bold text-brand-ink">支撑能力</h3>
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-2 text-sm text-brand-muted">
           {[
             "跨资料一致性比对（台账×排污许可×环评×联单）",
             "现场核查辅助（OCR + 视觉双通道）",
             "全程本地可控（核心模型与敏感资料留在本地环境，数据不出域）",
           ].map((cap, idx, arr) => (
             <React.Fragment key={cap}>
-              <span className="rounded-lg bg-emerald-50 border border-emerald-200 px-4 py-2 font-medium text-center">{cap}</span>
-              {idx < arr.length - 1 && <ChevronRight className="hidden sm:block h-4 w-4 text-emerald-400" />}
+              <span className="rounded-lg bg-brand-surface border border-brand-border px-4 py-2 font-medium text-center text-brand-muted">{cap}</span>
+              {idx < arr.length - 1 && <ChevronRight className="hidden sm:block h-4 w-4 text-brand-border" />}
             </React.Fragment>
           ))}
         </div>
 
         {/* 能力演进路线 */}
-        <h3 className="mt-16 text-2xl font-bold text-emerald-950">能力演进路线</h3>
-        <p className="mt-4 text-sm text-emerald-800/50">按实际落地进度如实标注，持续迭代。</p>
+        <h3 className="mt-16 text-2xl font-bold text-brand-ink">能力演进路线</h3>
+        <p className="mt-4 text-sm text-brand-muted">按实际落地进度如实标注，持续迭代。</p>
         <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-3">
           {[
-            { label: "已上线", title: "台账智能审查 · 跨资料一致性比对", color: "border-emerald-400 bg-emerald-50 text-emerald-700" },
-            { label: "完善中", title: "现场核查（OCR＋视觉）· 鉴别复核辅助", color: "border-emerald-200 bg-white text-emerald-800/70" },
-            { label: "持续演进", title: "全过程合规审查", color: "border-emerald-100 bg-emerald-50/30 text-emerald-600/50" },
+            { label: "已上线", title: "台账智能审查 · 跨资料一致性比对", color: "border-[#05B27D]/30 bg-brand-surface text-brand-ink" },
+            { label: "完善中", title: "现场核查（OCR＋视觉）· 鉴别复核辅助", color: "border-brand-border bg-white text-brand-muted" },
+            { label: "持续演进", title: "全过程合规审查", color: "border-brand-border bg-brand-surface text-brand-muted opacity-60" },
           ].map((item) => (
-            <div key={item.label} className={`rounded-xl border p-5 ${item.color}`}>
-              <span className="text-[10px] font-bold tracking-widest uppercase mb-2 block opacity-70">{item.label}</span>
+            <div key={item.label} className={`rounded-xl border p-5 shadow-[0_1px_2px_rgba(0,0,0,0.04)] ${item.color}`}>
+              <span className="text-[10px] font-bold tracking-widest uppercase mb-2 block text-[#05B27D]">{item.label}</span>
               <p className="text-sm font-semibold leading-6">{item.title}</p>
             </div>
           ))}
         </div>
 
         {/* 已具备能力 */}
-        <h3 className="mt-16 text-2xl font-bold text-emerald-950">已具备能力</h3>
+        <h3 className="mt-16 text-2xl font-bold text-brand-ink">已具备能力</h3>
         <div className="mt-8 grid gap-3 md:grid-cols-2">
           {[
             "台账、排污许可、环评、联单多资料读取与 OCR",
@@ -962,27 +956,27 @@ function ZhiweiPage({ setPage }: { setPage: (p: string) => void }) {
             "现场 OCR 与视觉双通道（完善中）",
             "全程本地部署，敏感资料不出域",
           ].map((item) => (
-            <div key={item} className="flex items-center gap-3 rounded-xl border border-emerald-100 bg-white p-4 text-sm text-emerald-800/70">
-              <CheckCircle2 className="h-4 w-4 text-emerald-500 flex-shrink-0" /> {item}
+            <div key={item} className="flex items-center gap-3 rounded-xl border border-brand-border bg-white p-4 text-sm text-brand-muted shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+              <CheckCircle2 className="h-4 w-4 text-[#05B27D] flex-shrink-0" /> {item}
             </div>
           ))}
         </div>
 
         {/* 产品边界 */}
-        <h3 className="mt-16 text-2xl font-bold text-emerald-950">产品边界</h3>
+        <h3 className="mt-16 text-2xl font-bold text-brand-ink">产品边界</h3>
         <div className="mt-8 grid gap-8 md:grid-cols-2">
-          <div className="rounded-2xl border border-emerald-200 bg-white p-6">
-            <h4 className="text-base font-semibold text-emerald-950 mb-4">知微做的</h4>
+          <div className="rounded-2xl border border-brand-border bg-white p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+            <h4 className="text-base font-semibold text-brand-ink mb-4">知微做的</h4>
             <div className="space-y-2.5">
               {["多资料读取与解析", "跨资料一致性比对", "差距与缺证定位", "证据归集与问题说明", "鉴别报告要点核查辅助", "可整改自查底稿生成"].map((item) => (
-                <div key={item} className="flex items-center gap-3 text-sm text-emerald-800/70">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-500 flex-shrink-0" /> {item}
+                <div key={item} className="flex items-center gap-3 text-sm text-brand-muted">
+                  <CheckCircle2 className="h-4 w-4 text-[#05B27D] flex-shrink-0" /> {item}
                 </div>
               ))}
             </div>
           </div>
-          <div className="rounded-2xl border border-red-100 bg-white p-6">
-            <h4 className="text-base font-semibold text-emerald-950 mb-4">知微不替代的</h4>
+          <div className="rounded-2xl border border-red-100 bg-white p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+            <h4 className="text-base font-semibold text-brand-ink mb-4">知微不替代的</h4>
             <div className="space-y-2.5">
               {["违法违规定性", "行政执法决定", "行政处罚建议", "最终专家核查与签发"].map((item) => (
                 <div key={item} className="flex items-center gap-3 text-sm text-red-700/60">
@@ -997,8 +991,8 @@ function ZhiweiPage({ setPage }: { setPage: (p: string) => void }) {
         </div>
 
         {/* 数据安全 */}
-        <h3 className="mt-16 text-2xl font-bold text-emerald-950">数据安全与本地部署</h3>
-        <p className="mt-4 max-w-3xl text-sm leading-7 text-emerald-800/50">
+        <h3 className="mt-16 text-2xl font-bold text-brand-ink">数据安全与本地部署</h3>
+        <p className="mt-4 max-w-3xl text-sm leading-7 text-brand-muted">
           全程本地可控：核心模型与敏感资料留在本地环境，数据不出域。
           接口访问鉴权、白名单与速率限制在本地运行，敏感资料不经公网流转。
         </p>
@@ -1012,22 +1006,22 @@ function ZhiweiPage({ setPage }: { setPage: (p: string) => void }) {
           ].map((item) => {
             const Icon = item.icon;
             return (
-              <div key={item.title} className="rounded-xl border border-emerald-200 bg-white p-4 text-center">
-                <Icon className="mx-auto h-5 w-5 text-emerald-600 mb-2" />
-                <h4 className="text-xs font-semibold text-emerald-950">{item.title}</h4>
-                <p className="mt-1 text-[11px] leading-5 text-emerald-800/50">{item.desc}</p>
+              <div key={item.title} className="rounded-xl border border-brand-border bg-white p-4 text-center shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+                <Icon className="mx-auto h-5 w-5 text-[#05B27D] mb-2" />
+                <h4 className="text-xs font-semibold text-brand-ink">{item.title}</h4>
+                <p className="mt-1 text-[11px] leading-5 text-brand-muted">{item.desc}</p>
               </div>
             );
           })}
         </div>
-        <p className="mt-6 text-center text-sm text-emerald-700/50">
+        <p className="mt-6 text-center text-sm text-brand-muted">
           适用于合规自查、第三方核查及政府规范化评估准备场景。
         </p>
 
         {/* CTA */}
-        <div className="mt-16 rounded-2xl border border-emerald-200 bg-emerald-50/50 p-10 text-center">
-          <h3 className="text-xl font-bold text-emerald-950">了解知微的实际应用方式</h3>
-          <p className="mt-3 max-w-2xl mx-auto text-sm leading-7 text-emerald-800/50">
+        <div className="mt-16 rounded-2xl border border-brand-border bg-brand-surface p-10 text-center shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+          <h3 className="text-xl font-bold text-brand-ink">了解知微的实际应用方式</h3>
+          <p className="mt-3 max-w-2xl mx-auto text-sm leading-7 text-brand-muted">
             可结合产品演示、现场交流与本地部署方案，进一步了解知微在危废规范化管理与鉴别复核场景中的适用方式。
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-4">
@@ -1050,41 +1044,41 @@ function ContactPage() {
   return (
     <div className="min-h-screen bg-white pt-28 pb-20">
       <div className="mx-auto max-w-7xl px-6">
-        <div className="text-xs font-medium tracking-[0.25em] uppercase text-emerald-600">联络 · Contact</div>
-        <h2 className="font-display mt-4 text-3xl font-bold text-emerald-950 md:text-5xl">联系我们</h2>
-        <p className="mt-6 text-base text-emerald-800/60">欢迎咨询环保专业服务、知微产品介绍及本地部署应用方式</p>
-        <p className="mt-4 max-w-3xl text-sm leading-7 text-emerald-800/50">
+        <div className="text-xs font-medium tracking-[0.25em] uppercase text-[#05B27D]">联络 · Contact</div>
+        <h2 className="mt-4 text-3xl font-bold text-brand-ink md:text-5xl tracking-tight">联系我们</h2>
+        <p className="mt-6 text-base text-brand-muted">欢迎咨询环保专业服务、知微产品介绍及本地部署应用方式</p>
+        <p className="mt-4 max-w-3xl text-sm leading-7 text-brand-muted">
           如您关注危险废物资料审查、跨资料一致性比对、鉴别复核辅助或本地部署应用，欢迎与我们联系。
         </p>
         <div className="mt-10 grid gap-6 md:grid-cols-3">
           {contactInfo.map((item) => {
             const Icon = item.icon;
             return (
-              <div key={item.text} className="rounded-2xl border border-emerald-200 bg-white p-6 transition hover:shadow-lg">
-                <Icon className="h-5 w-5 text-emerald-600" />
-                <div className="mt-4 text-xs text-emerald-600">{item.label}</div>
-                <div className="mt-1 font-medium text-emerald-950">{item.text}</div>
+              <div key={item.text} className="rounded-2xl border border-brand-border bg-white p-6 transition hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+                <Icon className="h-5 w-5 text-[#05B27D]" />
+                <div className="mt-4 text-xs text-brand-muted">{item.label}</div>
+                <div className="mt-1 font-medium text-brand-ink">{item.text}</div>
               </div>
             );
           })}
         </div>
-        <div className="mt-12 rounded-2xl border border-emerald-200 bg-emerald-50/50 p-8">
-          <p className="text-sm text-emerald-800/60 mb-6">
+        <div className="mt-12 rounded-2xl border border-brand-border bg-brand-surface p-8 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+          <p className="text-sm text-brand-muted mb-6">
             我们可根据实际需求，介绍知微适用场景、能力边界与部署方式。
           </p>
-          <h3 className="text-lg font-semibold text-emerald-950 mb-4">留言咨询</h3>
+          <h3 className="text-lg font-semibold text-brand-ink mb-4">留言咨询</h3>
           <form onSubmit={(e) => e.preventDefault()} className="grid gap-4 md:grid-cols-2">
             <div>
-              <label htmlFor="contact-name" className="block text-xs text-emerald-600 mb-1.5">姓名</label>
-              <input id="contact-name" className="w-full rounded-lg border border-emerald-200 bg-white px-4 py-2.5 text-sm text-emerald-950 outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-200" />
+              <label htmlFor="contact-name" className="block text-xs text-brand-muted mb-1.5">姓名</label>
+              <input id="contact-name" className="w-full rounded-lg border border-brand-border bg-white px-4 py-2.5 text-sm text-brand-ink outline-none focus:border-[#05B27D] focus:ring-2 focus:ring-[#05B27D]/20" />
             </div>
             <div>
-              <label htmlFor="contact-phone" className="block text-xs text-emerald-600 mb-1.5">联系方式</label>
-              <input id="contact-phone" className="w-full rounded-lg border border-emerald-200 bg-white px-4 py-2.5 text-sm text-emerald-950 outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-200" />
+              <label htmlFor="contact-phone" className="block text-xs text-brand-muted mb-1.5">联系方式</label>
+              <input id="contact-phone" className="w-full rounded-lg border border-brand-border bg-white px-4 py-2.5 text-sm text-brand-ink outline-none focus:border-[#05B27D] focus:ring-2 focus:ring-[#05B27D]/20" />
             </div>
             <div className="md:col-span-2">
-              <label htmlFor="contact-message" className="block text-xs text-emerald-600 mb-1.5">咨询内容</label>
-              <textarea id="contact-message" className="w-full rounded-lg border border-emerald-200 bg-white px-4 py-2.5 text-sm text-emerald-950 outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-200 h-24 resize-none" />
+              <label htmlFor="contact-message" className="block text-xs text-brand-muted mb-1.5">咨询内容</label>
+              <textarea id="contact-message" className="w-full rounded-lg border border-brand-border bg-white px-4 py-2.5 text-sm text-brand-ink outline-none focus:border-[#05B27D] focus:ring-2 focus:ring-[#05B27D]/20 h-24 resize-none" />
             </div>
             <div className="md:col-span-2">
               <button type="submit" className={`${btnPrimary} px-7 py-2.5`}>
@@ -1141,16 +1135,16 @@ function DemoFlowPage({ scenario, onBack }: { scenario: DemoScenario; onBack: ()
 
   return (
     <div className="min-h-screen bg-white pt-24">
-      <div className="border-b border-emerald-100 bg-white/90 backdrop-blur-xl">
+      <div className="border-b border-brand-border bg-white/90 backdrop-blur-xl">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-3">
-          <button onClick={onBack} className="flex items-center gap-2 text-sm text-emerald-600 hover:text-emerald-900">
+          <button onClick={onBack} className="flex items-center gap-2 text-sm text-brand-muted hover:text-brand-ink">
             <ArrowLeft className="h-4 w-4" /> 返回
           </button>
           <div className="flex items-center gap-2">
-            <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700">{scenario.tag}</span>
-            <span className="text-sm font-semibold text-emerald-950">{scenario.version}</span>
+            <span className="rounded-full bg-brand-surface border border-brand-border px-3 py-1 text-xs font-medium text-brand-muted">{scenario.tag}</span>
+            <span className="text-sm font-semibold text-brand-ink">{scenario.version}</span>
           </div>
-          <span className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs text-emerald-700">演示模式</span>
+          <span className="rounded-full border border-brand-border bg-brand-surface px-3 py-1 text-xs text-brand-muted">演示模式</span>
         </div>
       </div>
 
@@ -1158,29 +1152,29 @@ function DemoFlowPage({ scenario, onBack }: { scenario: DemoScenario; onBack: ()
         {phase === "upload" && (
           <div className="space-y-8">
             <div className="text-center">
-              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-200">
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-surface text-[#05B27D] border border-brand-border">
                 <Icon className="h-7 w-7" />
               </div>
-              <h2 className="font-display mt-6 text-2xl font-bold text-emerald-950 md:text-3xl">{scenario.title}</h2>
-              <p className="mt-3 text-base text-emerald-800/50">{scenario.desc}</p>
+              <h2 className="mt-6 text-2xl font-bold text-brand-ink md:text-3xl tracking-tight">{scenario.title}</h2>
+              <p className="mt-3 text-base text-brand-muted">{scenario.desc}</p>
             </div>
-            <div className="rounded-2xl border-2 border-dashed border-emerald-200 bg-emerald-50/30 p-8">
-              <div className="text-center text-sm text-emerald-600 mb-6">已预置演示文件</div>
+            <div className="rounded-2xl border-2 border-dashed border-brand-border bg-brand-surface p-8">
+              <div className="text-center text-sm text-brand-muted mb-6">已预置演示文件</div>
               <div className="space-y-3">
                 {scenario.files.map((f) => { const FI = f.icon; return (
-                  <div key={f.name} className="flex items-center gap-4 rounded-xl border border-emerald-100 bg-white p-4">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600"><FI className="h-5 w-5" /></div>
+                  <div key={f.name} className="flex items-center gap-4 rounded-xl border border-brand-border bg-white p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-brand-surface text-[#05B27D]"><FI className="h-5 w-5" /></div>
                     <div className="flex-1 min-w-0">
-                      <div className="font-medium text-emerald-950 truncate">{f.name}</div>
-                      <div className="text-xs text-emerald-600/50">{f.type} · {f.size}</div>
+                      <div className="font-medium text-brand-ink truncate">{f.name}</div>
+                      <div className="text-xs text-brand-muted">{f.type} · {f.size}</div>
                     </div>
-                    <CheckCircle2 className="h-5 w-5 text-emerald-500" />
+                    <CheckCircle2 className="h-5 w-5 text-[#05B27D]" />
                   </div>
                 ); })}
               </div>
             </div>
             <div className="flex justify-center">
-              <button onClick={startDemo} className="flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald-700 to-teal-600 px-10 py-3.5 font-medium text-white hover:from-emerald-800 hover:to-teal-700">
+              <button onClick={startDemo} className="flex items-center gap-2 rounded-full bg-brand-gradient px-10 py-3.5 font-medium text-white hover:opacity-90">
                 <Play className="h-5 w-5" /> 开始审查演示
               </button>
             </div>
@@ -1190,39 +1184,39 @@ function DemoFlowPage({ scenario, onBack }: { scenario: DemoScenario; onBack: ()
         {phase === "running" && (
           <div className="space-y-8">
             <div className="text-center">
-              <h2 className="text-2xl font-bold text-emerald-950">审查进行中...</h2>
-              <p className="mt-2 text-sm text-emerald-800/50">{scenario.title}</p>
+              <h2 className="text-2xl font-bold text-brand-ink">审查进行中...</h2>
+              <p className="mt-2 text-sm text-brand-muted">{scenario.title}</p>
             </div>
             <div>
               <div className="flex justify-between text-sm mb-2">
-                <span className="text-emerald-700/50">总进度</span>
-                <span className="font-mono font-semibold text-emerald-900">{Math.round(progress)}%</span>
+                <span className="text-brand-muted">总进度</span>
+                <span className="font-mono font-semibold text-brand-ink">{Math.round(progress)}%</span>
               </div>
-              <div className="h-1.5 rounded-full bg-emerald-100 overflow-hidden">
-                <div className="h-full rounded-full bg-emerald-500 transition-all duration-200" style={{ width: `${progress}%` }} />
+              <div className="h-1.5 rounded-full bg-brand-surface overflow-hidden">
+                <div className="h-full rounded-full bg-[#05B27D] transition-all duration-200" style={{ width: `${progress}%` }} />
               </div>
             </div>
-            <div className="rounded-2xl border border-emerald-200 bg-white p-6">
+            <div className="rounded-2xl border border-brand-border bg-white p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
               {currentStep < scenario.steps.length ? (
                 <div className="flex items-start gap-4">
-                  <Loader2 className="h-6 w-6 animate-spin text-emerald-500 mt-0.5" />
+                  <Loader2 className="h-6 w-6 animate-spin text-[#05B27D] mt-0.5" />
                   <div>
-                    <div className="text-lg font-semibold text-emerald-950">{scenario.steps[currentStep].label}</div>
-                    <p className="mt-2 text-sm text-emerald-800/50">{scenario.steps[currentStep].detail}</p>
-                    {currentStep === 0 && <div className="mt-4 rounded-xl bg-emerald-50 p-4 text-sm text-emerald-800">{scenario.parseResult}</div>}
+                    <div className="text-lg font-semibold text-brand-ink">{scenario.steps[currentStep].label}</div>
+                    <p className="mt-2 text-sm text-brand-muted">{scenario.steps[currentStep].detail}</p>
+                    {currentStep === 0 && <div className="mt-4 rounded-xl bg-brand-surface p-4 text-sm text-brand-ink">{scenario.parseResult}</div>}
                   </div>
                 </div>
               ) : (
                 <div className="flex items-center gap-4">
-                  <CheckCircle2 className="h-6 w-6 text-emerald-500" />
-                  <div className="text-lg font-semibold text-emerald-950">所有审查步骤已完成</div>
+                  <CheckCircle2 className="h-6 w-6 text-[#05B27D]" />
+                  <div className="text-lg font-semibold text-brand-ink">所有审查步骤已完成</div>
                 </div>
               )}
               {currentStep > 0 && (
-                <div className="mt-6 space-y-2 border-t border-emerald-100 pt-4">
+                <div className="mt-6 space-y-2 border-t border-brand-border pt-4">
                   {scenario.steps.slice(0, currentStep).map((s, idx) => (
-                    <div key={idx} className="flex items-center gap-3 text-sm text-emerald-700/50">
-                      <CheckCircle2 className="h-4 w-4 text-emerald-500" /> {s.label}
+                    <div key={idx} className="flex items-center gap-3 text-sm text-brand-muted">
+                      <CheckCircle2 className="h-4 w-4 text-[#05B27D]" /> {s.label}
                     </div>
                   ))}
                 </div>
@@ -1234,49 +1228,49 @@ function DemoFlowPage({ scenario, onBack }: { scenario: DemoScenario; onBack: ()
         {phase === "done" && (
           <div className="space-y-8">
             <div className="text-center">
-              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-50">
-                <CheckCircle2 className="h-8 w-8 text-emerald-500" />
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-brand-surface border border-brand-border">
+                <CheckCircle2 className="h-8 w-8 text-[#05B27D]" />
               </div>
-              <h2 className="font-display mt-5 text-2xl font-bold text-emerald-950 md:text-3xl">审查完成</h2>
-              <p className="mt-2 text-sm text-emerald-800/50">耗时 {scenario.summary.duration}</p>
+              <h2 className="mt-5 text-2xl font-bold text-brand-ink md:text-3xl tracking-tight">审查完成</h2>
+              <p className="mt-2 text-sm text-brand-muted">耗时 {scenario.summary.duration}</p>
             </div>
             <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
               {[
-                { l: "问题总数", v: scenario.summary.total, c: "text-emerald-950" },
+                { l: "问题总数", v: scenario.summary.total, c: "text-brand-ink" },
                 { l: "高风险", v: scenario.summary.high, c: "text-red-600" },
                 { l: "中风险", v: scenario.summary.medium, c: "text-amber-600" },
                 { l: "低风险", v: scenario.summary.low, c: "text-sky-600" },
               ].map((s) => (
-                <div key={s.l} className="rounded-2xl border border-emerald-200 bg-white p-5 text-center">
+                <div key={s.l} className="rounded-2xl border border-brand-border bg-white p-5 text-center shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
                   <div className={`text-3xl font-bold ${s.c}`}>{s.v}</div>
-                  <div className="mt-1 text-xs text-emerald-800/40">{s.l}</div>
+                  <div className="mt-1 text-xs text-brand-muted">{s.l}</div>
                 </div>
               ))}
             </div>
-            <div className="rounded-2xl border border-emerald-200 bg-white p-6">
+            <div className="rounded-2xl border border-brand-border bg-white p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-semibold text-emerald-950">审查发现清单</h3>
-                <div className="flex items-center gap-2 text-xs text-emerald-700/40"><Eye className="h-3.5 w-3.5" /> {visibleFindings} / {scenario.findings.length}</div>
+                <h3 className="text-lg font-semibold text-brand-ink">审查发现清单</h3>
+                <div className="flex items-center gap-2 text-xs text-brand-muted"><Eye className="h-3.5 w-3.5" /> {visibleFindings} / {scenario.findings.length}</div>
               </div>
               <div className="space-y-3">
                 {scenario.findings.slice(0, visibleFindings).map((f) => (
                   <motion.div key={f.code} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-                    className="flex gap-4 rounded-xl border border-emerald-100 bg-emerald-50/30 p-4">
+                    className="flex gap-4 rounded-xl border border-brand-border bg-brand-surface p-4">
                     <div className="flex flex-col items-start gap-2 flex-shrink-0">
                       <FindingBadge level={f.level} />
-                      <span className="font-mono text-xs text-emerald-700/30">{f.code}</span>
+                      <span className="font-mono text-xs text-brand-muted">{f.code}</span>
                     </div>
-                    <p className="text-sm leading-7 text-emerald-900/70">{f.text}</p>
+                    <p className="text-sm leading-7 text-brand-ink">{f.text}</p>
                   </motion.div>
                 ))}
               </div>
             </div>
             <div className="flex flex-col items-center gap-4">
-              <button onClick={resetDemo} className="flex items-center gap-2 rounded-full border border-emerald-200 px-6 py-2.5 text-sm text-emerald-700 hover:bg-emerald-50">
+              <button onClick={resetDemo} className="flex items-center gap-2 rounded-full border border-brand-border px-6 py-2.5 text-sm text-brand-muted hover:bg-brand-surface">
                 <RotateCcw className="h-4 w-4" /> 重新播放
               </button>
-              <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-6 py-3 text-center">
-                <p className="text-xs text-emerald-700/60">以上为脱敏演示数据。知微定位为资料审查与复核辅助工具，不替代最终专家判断，不直接输出执法结论。</p>
+              <div className="rounded-xl border border-brand-border bg-brand-surface px-6 py-3 text-center">
+                <p className="text-xs text-brand-muted">以上为脱敏演示数据。知微定位为资料审查与复核辅助工具，不替代最终专家判断，不直接输出执法结论。</p>
               </div>
             </div>
           </div>
@@ -1294,11 +1288,11 @@ function DemoShowcasePage() {
     <div className="min-h-screen bg-white pt-24">
       <section className="py-20 md:py-28">
         <div className="mx-auto max-w-4xl px-6 text-center">
-          <h1 className="font-display text-4xl font-bold text-emerald-950 md:text-5xl">知微产品演示</h1>
-          <p className="mt-4 max-w-2xl mx-auto text-base leading-8 text-emerald-800/50">
+          <h1 className="text-4xl font-bold text-brand-ink md:text-5xl tracking-tight">知微产品演示</h1>
+          <p className="mt-4 max-w-2xl mx-auto text-base leading-8 text-brand-muted">
             请选择一个典型场景，了解知微在危险废物资料审查与复核辅助中的应用方式。
           </p>
-          <p className="mt-2 text-sm text-emerald-700/40">
+          <p className="mt-2 text-sm text-brand-muted">
             本页面展示均为脱敏案例演示，不涉及真实企业公开信息。
           </p>
         </div>
@@ -1309,16 +1303,16 @@ function DemoShowcasePage() {
             const Icon = s.icon;
             return (
               <motion.button key={s.id} onClick={() => setSel(s.id)} whileHover={{ y: -3 }}
-                className="group rounded-xl border border-emerald-200 bg-white p-6 text-left transition hover:shadow-lg hover:border-emerald-300">
+                className="group rounded-xl border border-brand-border bg-white p-6 text-left transition hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] hover:border-[#05B27D]/30 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
                 <div className="flex items-start justify-between">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 transition group-hover:bg-emerald-100">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-surface text-[#05B27D] transition group-hover:bg-[#05B27D]/10">
                     <Icon className="h-5 w-5" />
                   </div>
-                  <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">{s.tag}</span>
+                  <span className="rounded-full bg-brand-surface border border-brand-border px-3 py-1 text-xs font-semibold text-brand-muted">{s.tag}</span>
                 </div>
-                <h3 className="mt-5 text-lg font-bold text-emerald-950">{s.version}</h3>
-                <p className="mt-2 text-sm leading-7 text-emerald-800/50">{s.desc}</p>
-                <div className="mt-5 flex items-center gap-2 text-sm font-medium text-emerald-600 group-hover:text-emerald-800">
+                <h3 className="mt-5 text-lg font-bold text-brand-ink">{s.version}</h3>
+                <p className="mt-2 text-sm leading-7 text-brand-muted">{s.desc}</p>
+                <div className="mt-5 flex items-center gap-2 text-sm font-medium text-[#05B27D] group-hover:text-brand-ink">
                   <Play className="h-4 w-4" /> 查看演示 <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </div>
               </motion.button>
@@ -1328,19 +1322,19 @@ function DemoShowcasePage() {
       </section>
 
       {/* 产品路线 */}
-      <section className="border-t border-emerald-100 py-16">
+      <section className="border-t border-brand-border py-16">
         <div className="mx-auto max-w-3xl px-6">
-          <h3 className="text-center text-lg font-bold text-emerald-950 mb-8">演示场景与成熟度</h3>
+          <h3 className="text-center text-lg font-bold text-brand-ink mb-8">演示场景与成熟度</h3>
           <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
             {[
-              { label: "当前重点展示", title: "跨资料一致性比对", color: "bg-emerald-100 text-emerald-700" },
-              { label: "持续完善中", title: "鉴别复核辅助", color: "bg-teal-100 text-teal-700" },
-              { label: "拓展方向演示", title: "现场核查辅助", color: "bg-emerald-100/50 text-emerald-600/50" },
-              { label: "长期目标", title: "全过程危废合规审查", color: "bg-emerald-50/50 text-emerald-600/40" },
+              { label: "当前重点展示", title: "跨资料一致性比对", color: "bg-[#05B27D]/10 text-[#05B27D]" },
+              { label: "持续完善中", title: "鉴别复核辅助", color: "bg-brand-surface text-brand-muted" },
+              { label: "拓展方向演示", title: "现场核查辅助", color: "bg-brand-surface text-brand-muted opacity-70" },
+              { label: "长期目标", title: "全过程危废合规审查", color: "bg-brand-surface text-brand-muted opacity-50" },
             ].map((item) => (
-              <div key={item.title} className="rounded-xl border border-emerald-200 bg-white p-4 text-center">
+              <div key={item.title} className="rounded-xl border border-brand-border bg-white p-4 text-center shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
                 <div className={`inline-flex rounded-full px-2.5 py-0.5 text-[10px] font-medium ${item.color}`}>{item.label}</div>
-                <p className="mt-2 text-xs font-semibold text-emerald-950">{item.title}</p>
+                <p className="mt-2 text-xs font-semibold text-brand-ink">{item.title}</p>
               </div>
             ))}
           </div>
@@ -1348,13 +1342,13 @@ function DemoShowcasePage() {
       </section>
 
       {/* 演示声明 */}
-      <section className="border-t border-emerald-100 py-10">
+      <section className="border-t border-brand-border py-10">
         <div className="mx-auto max-w-3xl px-6 text-center">
-          <div className="rounded-xl border border-emerald-200 bg-emerald-50/50 p-6">
-            <div className="flex items-center justify-center gap-2 text-sm font-medium text-emerald-700">
+          <div className="rounded-xl border border-brand-border bg-brand-surface p-6">
+            <div className="flex items-center justify-center gap-2 text-sm font-medium text-brand-muted">
               <AlertTriangle className="h-4 w-4" /> 演示声明
             </div>
-            <p className="mt-3 text-sm leading-7 text-emerald-800/40">
+            <p className="mt-3 text-sm leading-7 text-brand-muted">
               本页面仅用于展示产品能力边界与适用场景，页面中的企业名称、数据及材料均为脱敏或虚构示例。
               知微定位为资料审查与复核辅助工具，聚焦问题发现、依据归集与结构化表达，不替代最终专家判断，不直接输出执法结论。
             </p>
@@ -1371,42 +1365,42 @@ function DemoShowcasePage() {
 
 function Footer({ setPage }: { setPage: (p: string) => void }) {
   return (
-    <footer className="border-t border-emerald-100 bg-white">
+    <footer className="border-t border-brand-border bg-white">
       <div className="mx-auto grid max-w-7xl gap-10 px-6 py-12 md:grid-cols-3">
         <div>
-          <div className="flex items-center gap-3 text-emerald-900">
+          <div className="flex items-center gap-3 text-brand-ink">
             <LogoMark className="h-6 w-6" />
             <div>
-              <div className="text-[10px] tracking-[0.3em] uppercase text-emerald-500">ZHIWEI</div>
+              <div className="text-[10px] tracking-[0.3em] uppercase text-[#05B27D]">ZHIWEI</div>
               <div className="text-sm font-semibold">广州市亿点环保有限公司｜知微 · 危废规范化管理与鉴别复核智能审查</div>
             </div>
           </div>
-          <p className="mt-3 text-xs leading-6 text-emerald-800/50">
+          <p className="mt-3 text-xs leading-6 text-brand-muted">
             知微见著 · 洞察每一点价值
           </p>
-          <p className="mt-2 max-w-md text-xs leading-5 text-emerald-800/40">
+          <p className="mt-2 max-w-md text-xs leading-5 text-brand-muted">
             本产品为 AI 辅助参考工具，不构成行政执法决定，最终以专家核查为准。
           </p>
         </div>
         <div>
-          <div className="text-xs font-semibold text-emerald-700 mb-3">快速链接</div>
-          <div className="grid gap-1.5 text-xs text-emerald-800/50">
+          <div className="text-xs font-semibold text-brand-ink mb-3">快速链接</div>
+          <div className="grid gap-1.5 text-xs text-brand-muted">
             {navItems.map(([key, label]) => (
-              <button key={key} onClick={() => setPage(key)} className="text-left hover:text-emerald-700 transition">
+              <button key={key} onClick={() => setPage(key)} className="text-left hover:text-brand-ink transition">
                 {label}
               </button>
             ))}
           </div>
         </div>
-        <div className="grid gap-2 text-xs text-emerald-800/50">
+        <div className="grid gap-2 text-xs text-brand-muted">
           {contactInfo.map((item) => { const Icon = item.icon; return (
             <div key={item.text} className="flex items-center gap-3">
-              <Icon className="h-3.5 w-3.5 text-emerald-400" /> {item.text}
+              <Icon className="h-3.5 w-3.5 text-[#05B27D]" /> {item.text}
             </div>
           ); })}
         </div>
       </div>
-      <div className="border-t border-emerald-100 py-5 text-center text-xs text-emerald-800/30">
+      <div className="border-t border-brand-border py-5 text-center text-xs text-brand-muted">
         &copy; {CURRENT_YEAR} 广州市亿点环保有限公司
       </div>
     </footer>
@@ -1432,7 +1426,7 @@ function ScrollToTop() {
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.8 }}
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="fixed bottom-6 right-6 z-50 flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-r from-emerald-700 to-teal-600 text-white shadow-lg shadow-teal-700/20 transition hover:from-emerald-800 hover:to-teal-700"
+          className="fixed bottom-6 right-6 z-50 flex h-10 w-10 items-center justify-center rounded-full bg-brand-gradient text-white shadow-lg shadow-black/10 transition hover:opacity-90"
           aria-label="回到顶部"
         >
           <ArrowUp className="h-4 w-4" />
