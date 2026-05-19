@@ -16,26 +16,23 @@ const notoSerifSC = Noto_Serif_SC({
 });
 
 export const metadata: Metadata = {
-  title: "知微｜危废管理智能体 · 亿点环保 YIDIAN CST",
-  description: "广州市亿点环保有限公司 — 知微面向危险废物资料审查、跨资料一致性比对与鉴别复核辅助场景的专业智能审查引擎。",
+  title: "知微 ZHIWEI｜危废规范化管理与鉴别复核智能审查 · 广州市亿点环保",
+  description: "知微是危险废物规范化管理与鉴别复核的智能审查助手——在台账、申报、联单与鉴别报告中主动发现合规偏差与证据缺口。广州市亿点环保有限公司。",
   metadataBase: new URL("https://yidiancst.ai"),
   openGraph: {
-    title: "知微｜危废管理智能体 — 亿点环保 YIDIAN CST",
-    description: "面向危险废物资料审查、跨资料一致性比对与鉴别复核辅助场景，辅助发现问题、归集依据、构建证据链。广州市亿点环保有限公司。",
+    title: "知微 ZHIWEI — 危废规范化管理与鉴别复核智能审查",
+    description: "危险废物规范化管理合规自查与鉴别复核辅助。全程本地可控，辅助而不替代专家判定。广州市亿点环保有限公司。",
     url: "https://yidiancst.ai",
-    siteName: "亿点环保 YIDIAN CST",
+    siteName: "知微 ZHIWEI · 广州市亿点环保",
     locale: "zh_CN",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "知微｜危废管理智能体 — 亿点环保 YIDIAN CST",
-    description: "面向危险废物资料审查、跨资料一致性比对与鉴别复核辅助场景的专业智能审查引擎。",
+    title: "知微 ZHIWEI — 危废规范化管理与鉴别复核智能审查",
+    description: "危险废物规范化管理合规自查与鉴别复核辅助，全程本地可控。",
   },
-  robots: {
-    index: true,
-    follow: true,
-  },
+  robots: { index: true, follow: true },
 };
 
 export default function RootLayout({
@@ -56,9 +53,9 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "Organization",
               name: "广州市亿点环保有限公司",
-              alternateName: "YIDIAN CST",
+              alternateName: "知微 ZHIWEI",
               url: "https://yidiancst.ai",
-              description: "环保专业服务与危险废物管理场景数字化能力建设 — 知微危废管理智能体",
+              description: "危险废物规范化管理与鉴别复核智能审查辅助，及环保专业咨询服务 — 广州市亿点环保有限公司",
               address: {
                 "@type": "PostalAddress",
                 streetAddress: "天河区天慧路10号A409室",
