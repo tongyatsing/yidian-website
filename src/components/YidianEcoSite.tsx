@@ -693,7 +693,7 @@ function HomePage({ setPage }: { setPage: (p: string) => void }) {
               className={`${btnPrimary} px-7 py-2.5`}>
               申请试用资格
             </button>
-            <button onClick={() => setPage("contact")}
+            <button onClick={() => setPage("demo")}
               className={`${btnSecondary} px-7 py-2.5`}>
               预约演示
             </button>
