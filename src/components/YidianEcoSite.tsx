@@ -343,9 +343,9 @@ function HomePage({ setPage }: { setPage: (p: string) => void }) {
   return (
     <div>
       {/* ── Hero ── */}
-      <section className="relative min-h-screen overflow-hidden bg-white">
+      <section className="relative min-h-screen overflow-hidden bg-gradient-to-b from-emerald-50/80 via-white to-white">
         <div className="pointer-events-none absolute inset-0 opacity-[0.03]"
-          style={{ backgroundImage: `radial-gradient(circle, #1A1A1A 1px, transparent 1px)`, backgroundSize: "32px 32px" }} />
+          style={{ backgroundImage: `radial-gradient(circle, #022c22 1px, transparent 1px)`, backgroundSize: "32px 32px" }} />
 
         <div className="relative mx-auto flex min-h-[calc(100vh-2rem)] max-w-7xl flex-col items-center justify-center px-6 pt-24 pb-8 md:min-h-screen md:pt-20 md:pb-0">
           <motion.div
@@ -364,8 +364,8 @@ function HomePage({ setPage }: { setPage: (p: string) => void }) {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="mt-8 max-w-4xl text-center"
           >
-            <h1 className="text-5xl font-bold leading-[1.08] tracking-tight text-brand-ink text-balance sm:text-6xl lg:text-7xl lg:whitespace-nowrap">
-              <span>危废合规，见微知著<span className="text-brand-gradient">。</span></span>
+            <h1 className="text-5xl font-bold leading-[1.08] tracking-tight text-balance sm:text-6xl lg:text-7xl lg:whitespace-nowrap">
+              <span className="bg-gradient-to-r from-emerald-700 to-teal-600 bg-clip-text text-transparent">危废合规，见微知著</span><span className="text-brand-gradient">。</span>
             </h1>
             <p className="mt-5 text-lg text-brand-muted md:text-xl tracking-wide">
               知微知彰，知柔知刚 —— 《易经·系辞》

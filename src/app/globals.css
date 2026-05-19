@@ -89,13 +89,13 @@
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
 
-  /* 知微品牌 v2 */
+  /* 知微品牌 v2 — 原版绿色风格 */
   --brand-from: #05B27D;
   --brand-to: #31D57A;
-  --brand-ink: #1A1A1A;
-  --brand-muted: #6B7280;
-  --brand-border: #E5E7EB;
-  --brand-surface: #F7F8FA;
+  --brand-ink: #022c22;
+  --brand-muted: #3d6b58;
+  --brand-border: #a7f3d0;
+  --brand-surface: #ecfdf5;
 }
 
 /* Dark mode: not wired to components yet. Re-enable when implementing dark theme.
