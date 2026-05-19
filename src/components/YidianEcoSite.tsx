@@ -665,10 +665,17 @@ function HomePage({ setPage }: { setPage: (p: string) => void }) {
           <div className="text-xs font-medium tracking-[0.25em] uppercase text-emerald-500">关于 · About</div>
           <h2 className="font-display mt-3 text-2xl font-bold text-emerald-950 md:text-3xl">广州市亿点环保有限公司</h2>
           <p className="mt-5 text-sm leading-8 text-emerald-800/50">
-            亿点环保深耕环保咨询领域，服务覆盖环保管家、建设项目环评、危废全过程管理、清洁生产与双碳转型。
-            我们相信，环保合规不应只靠经验判断——「知微」智能体将监管经验与 AI 能力融合，
-            从台账审查、跨资料比对到鉴别复核，帮助企业在复杂的合规环境中看清每一处细节。
+            亿点环保深耕环保咨询，将一线监管经验沉淀为可复用的审查逻辑——知微，从规范化管理与鉴别复核做起。
           </p>
+          <div className="mt-6 inline-flex flex-wrap justify-center gap-x-4 gap-y-1 text-xs text-emerald-700/60">
+            <span>软件著作权 5 项</span>
+            <span>·</span>
+            <span>实用新型专利 8 项</span>
+            <span>·</span>
+            <span>发明专利 2 项（优先审查中）</span>
+            <span>·</span>
+            <span>与广东工业大学产学研合作</span>
+          </div>
         </div>
       </section>
 
@@ -676,19 +683,19 @@ function HomePage({ setPage }: { setPage: (p: string) => void }) {
       <section className="border-t border-emerald-100 bg-emerald-50/40 py-24 md:py-28">
         <div className="mx-auto max-w-2xl px-6 text-center">
           <h2 className="font-display text-2xl font-bold text-emerald-950 md:text-4xl leading-tight">
-            让知微为您洞察合规细节
+            把合规细节交给知微，把判断留给你。
           </h2>
           <p className="mt-4 text-sm text-emerald-800/50">
-            交流环保咨询、项目合作与知微智能体演示需求，我们随时准备好。
+            交流危废规范化管理与鉴别复核的产品演示与合作，我们随时在。
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-4">
             <button onClick={() => setPage("contact")}
               className={`${btnPrimary} px-7 py-2.5`}>
-              联系我们
+              申请试用资格
             </button>
-            <button onClick={() => setPage("demo")}
+            <button onClick={() => setPage("contact")}
               className={`${btnSecondary} px-7 py-2.5`}>
-              产品演示
+              预约演示
             </button>
           </div>
         </div>
