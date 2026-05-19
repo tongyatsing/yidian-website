@@ -610,13 +610,12 @@ function HomePage({ setPage }: { setPage: (p: string) => void }) {
       </section>
 
       {/* ── Stats ── */}
+      {/* owner-confirmed: 500+ 服务企业（广州市亿点环保有限公司法定代表人口径） */}
       <section className="border-t border-emerald-100 bg-white py-16">
         <div className="mx-auto max-w-5xl px-6">
-          <div className="grid grid-cols-2 gap-8 md:grid-cols-4 text-center">
+          <div className="grid grid-cols-2 gap-12 max-w-sm mx-auto text-center">
             <CountUpStat num={500} suffix="+" label="服务企业" />
-            <CountUpStat num={8} suffix="" label="年行业深耕" />
-            <CountUpStat num={4} suffix="" label="知微产品版本" />
-            <CountUpStat num={7500} suffix="+" label="AI 训练样本" />
+            <CountUpStat num={2} suffix="" label="双主模块" />
           </div>
         </div>
       </section>
