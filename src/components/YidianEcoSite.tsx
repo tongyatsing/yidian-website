@@ -879,66 +879,88 @@ function ZhiweiPage({ setPage }: { setPage: (p: string) => void }) {
     <div className="min-h-screen bg-white pt-28 pb-20">
       <div className="mx-auto max-w-7xl px-6">
         {/* 页头 */}
-        <div className="text-xs font-medium tracking-[0.25em] uppercase text-emerald-600">知微 · Zhīwēi</div>
-        <h2 className="font-display mt-4 text-3xl font-bold text-emerald-950 md:text-5xl">知微｜危废管理智能体</h2>
-        <p className="mt-2 text-base text-emerald-800/60">面向危险废物资料审查、跨资料一致性比对与鉴别复核辅助场景</p>
+        <div className="text-xs font-medium tracking-[0.25em] uppercase text-emerald-600">知微 · ZHIWEI</div>
+        <h2 className="font-display mt-4 text-3xl font-bold text-emerald-950 md:text-5xl">危废规范化管理 + 鉴别复核<br className="hidden md:block" /> 双模块审查助手</h2>
+        <p className="mt-2 text-base text-emerald-800/60">辅助初审，不替代专家最终判定。数据本地，不出域。</p>
         <p className="mt-6 max-w-3xl text-sm leading-8 text-emerald-800/50">
-          知微强调的不是"自动给答案"，而是围绕复杂资料开展专业审查辅助。
-          它尽量从长文本、附件、多来源数据中识别问题、归集依据、构建证据链，并形成结构化审查结果或可复核底稿。
+          知微围绕危险废物合规自查与鉴别复核两类核心场景，跨多份非结构化材料语义对齐，
+          定位差距、归集证据、输出可整改底稿。专业判断由人来做，知微让准备工作不再费力。
         </p>
 
-        {/* 核心能力 */}
-        <h3 className="mt-16 text-2xl font-bold text-emerald-950">核心能力</h3>
-        <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {[
-            { icon: BookOpen, title: "多类资料读取与识别", desc: "支持台账、环评、排污许可、鉴别报告及相关附件的读取与识别。" },
-            { icon: FileSearch, title: "文档分类与信息抽取", desc: "提取关键字段、数据和表述信息，辅助后续审查。" },
-            { icon: Layers, title: "危废对象标准化对齐", desc: "对不同来源资料中的同类危废对象进行标准化关联。" },
-            { icon: ShieldAlert, title: "跨资料一致性比对", desc: "围绕名称、代码、数量、处置方式等信息开展交叉核查。" },
-            { icon: Search, title: "问题发现与依据匹配", desc: "围绕已识别问题进行标准要求、原文表述和相关依据的归集。" },
-            { icon: Database, title: "证据包构建", desc: "在适用场景下尽量形成原文、数据、依据、计算和风险分析的组合证据链。" },
-            { icon: ClipboardCheck, title: "复核表达输出", desc: "辅助形成结构化审查结果或可供复核修改的底稿。" },
-            { icon: Lock, title: "本地部署与安全控制", desc: "强调资料可控、接口受控和本地运行能力。" },
-          ].map((item) => {
-            const Icon = item.icon;
-            return (
-              <div key={item.title} className="rounded-2xl border border-emerald-200 bg-white p-5 transition hover:shadow-lg">
-                <Icon className="h-5 w-5 text-emerald-600" />
-                <h4 className="mt-4 text-sm font-semibold text-emerald-950">{item.title}</h4>
-                <p className="mt-2 text-xs leading-6 text-emerald-800/60">{item.desc}</p>
-              </div>
-            );
-          })}
+        {/* 双主模块 */}
+        <h3 className="mt-16 text-2xl font-bold text-emerald-950">两个主模块</h3>
+        <div className="mt-8 grid gap-6 md:grid-cols-2">
+          {/* 模块① */}
+          <div className="rounded-2xl border border-emerald-200 bg-white p-7 transition hover:shadow-lg">
+            <div className="flex items-center gap-3 mb-4">
+              <ClipboardCheck className="h-5 w-5 text-emerald-600 flex-shrink-0" />
+              <h4 className="text-base font-semibold text-emerald-950">危废规范化管理 · 合规自查与评估准备</h4>
+            </div>
+            <p className="text-sm leading-7 text-emerald-800/70">
+              对照国家危险废物规范化环境管理评估要求，知微逐项核对台账、申报、转移联单、贮存与标识、管理计划、应急与培训，定位每一处差距与缺证，产出可整改的自查底稿。
+            </p>
+            <p className="mt-4 text-xs leading-6 text-emerald-600/80 border-t border-emerald-100 pt-4">
+              人工逐档比对难免漏项、口径不一；知微跨多份非结构化材料语义对齐，让全项自查与证据归集第一次成为常态。
+            </p>
+          </div>
+          {/* 模块② */}
+          <div className="rounded-2xl border border-emerald-200 bg-white p-7 transition hover:shadow-lg">
+            <div className="flex items-center gap-3 mb-4">
+              <FileSearch className="h-5 w-5 text-emerald-600 flex-shrink-0" />
+              <h4 className="text-base font-semibold text-emerald-950">危废鉴别 · 复核辅助</h4>
+            </div>
+            <p className="text-sm leading-7 text-emerald-800/70">
+              围绕属性判定与鉴别报告，知微辅助核查采样代表性、检测项目与标准适用性，沿问题树组织证据链。
+            </p>
+            <div className="mt-4 rounded-xl border border-red-100 bg-red-50/40 px-4 py-3 text-xs leading-6 text-red-700/70 border-t-0">
+              知微辅助初审，不替代专家最终判定，不输出执法或定性结论。本产品为 AI 辅助参考工具，不构成行政执法决定，最终以专家核查为准。
+            </div>
+          </div>
         </div>
 
-        {/* 核心流程 */}
-        <h3 className="mt-16 text-2xl font-bold text-emerald-950">核心流程</h3>
+        {/* 支撑能力 */}
+        <h3 className="mt-16 text-2xl font-bold text-emerald-950">支撑能力</h3>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-2 text-sm text-emerald-800/70">
-          {["资料接收", "全文读取 / 识别", "信息抽取", "对象对齐", "问题发现", "依据归集", "证据构建", "审查输出"].map((step, idx, arr) => (
-            <React.Fragment key={step}>
-              <span className="rounded-lg bg-emerald-50 border border-emerald-200 px-4 py-2 font-medium">{step}</span>
+          {[
+            "跨资料一致性比对（台账×排污许可×环评×联单）",
+            "现场核查辅助（OCR + 视觉双通道）",
+            "全程本地可控（核心模型与敏感资料留在本地环境，数据不出域）",
+          ].map((cap, idx, arr) => (
+            <React.Fragment key={cap}>
+              <span className="rounded-lg bg-emerald-50 border border-emerald-200 px-4 py-2 font-medium text-center">{cap}</span>
               {idx < arr.length - 1 && <ChevronRight className="h-4 w-4 text-emerald-400" />}
             </React.Fragment>
           ))}
         </div>
 
-        {/* 技术架构 */}
-        <h3 className="mt-16 text-2xl font-bold text-emerald-950">技术架构</h3>
-        <p className="mt-4 text-sm text-emerald-800/50">知微以规则能力、专业知识、智能识别和本地部署能力协同支撑复杂资料审查。</p>
-        <div className="mt-8 grid grid-cols-2 gap-4 md:grid-cols-4">
-          {["规则能力", "专业知识", "智能识别", "本地部署"].map((item) => (
-            <div key={item} className="rounded-xl border border-emerald-200 bg-emerald-50/50 p-5 text-center">
-              <p className="text-sm font-semibold text-emerald-800">{item}</p>
+        {/* 能力演进路线 */}
+        <h3 className="mt-16 text-2xl font-bold text-emerald-950">能力演进路线</h3>
+        <p className="mt-4 text-sm text-emerald-800/50">按实际落地进度如实标注，持续迭代。</p>
+        <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-3">
+          {[
+            { label: "已上线", title: "台账智能审查 · 跨资料一致性比对", color: "border-emerald-400 bg-emerald-50 text-emerald-700" },
+            { label: "完善中", title: "现场核查（OCR＋视觉）· 鉴别复核辅助", color: "border-emerald-200 bg-white text-emerald-800/70" },
+            { label: "持续演进", title: "全过程合规审查", color: "border-emerald-100 bg-emerald-50/30 text-emerald-600/50" },
+          ].map((item) => (
+            <div key={item.label} className={`rounded-xl border p-5 ${item.color}`}>
+              <span className="text-[10px] font-bold tracking-widest uppercase mb-2 block opacity-70">{item.label}</span>
+              <p className="text-sm font-semibold leading-6">{item.title}</p>
             </div>
           ))}
         </div>
 
-        {/* 当前系统能力 */}
-        <h3 className="mt-16 text-2xl font-bold text-emerald-950">当前系统能力</h3>
+        {/* 已具备能力 */}
+        <h3 className="mt-16 text-2xl font-bold text-emerald-950">已具备能力</h3>
         <div className="mt-8 grid gap-3 md:grid-cols-2">
           {[
-            "多类资料读取与 OCR", "文档分类与字段抽取", "危废对象标准化关联", "跨资料一致性比对",
-            "依据匹配与问题说明", "结构化审查结果输出", "本地部署与安全控制能力", "产品演示与持续迭代能力",
+            "台账、排污许可、环评、联单多资料读取与 OCR",
+            "跨资料一致性比对与差距定位",
+            "规范化评估项逐项核查与缺证标注",
+            "鉴别报告采样代表性与检测标准适用性核查",
+            "问题树组织与证据链归集",
+            "可整改自查底稿输出",
+            "现场 OCR 与视觉双通道（完善中）",
+            "全程本地部署，敏感资料不出域",
           ].map((item) => (
             <div key={item} className="flex items-center gap-3 rounded-xl border border-emerald-100 bg-white p-4 text-sm text-emerald-800/70">
               <CheckCircle2 className="h-4 w-4 text-emerald-500 flex-shrink-0" /> {item}
@@ -950,9 +972,9 @@ function ZhiweiPage({ setPage }: { setPage: (p: string) => void }) {
         <h3 className="mt-16 text-2xl font-bold text-emerald-950">产品边界</h3>
         <div className="mt-8 grid gap-8 md:grid-cols-2">
           <div className="rounded-2xl border border-emerald-200 bg-white p-6">
-            <h4 className="text-base font-semibold text-emerald-950 mb-4">主要辅助内容</h4>
+            <h4 className="text-base font-semibold text-emerald-950 mb-4">知微做的</h4>
             <div className="space-y-2.5">
-              {["资料读取与解析", "一致性比对", "风险提示", "核查辅助", "依据归集", "审查结果输出", "复核底稿辅助生成"].map((item) => (
+              {["多资料读取与解析", "跨资料一致性比对", "差距与缺证定位", "证据归集与问题说明", "鉴别报告要点核查辅助", "可整改自查底稿生成"].map((item) => (
                 <div key={item} className="flex items-center gap-3 text-sm text-emerald-800/70">
                   <CheckCircle2 className="h-4 w-4 text-emerald-500 flex-shrink-0" /> {item}
                 </div>
@@ -960,30 +982,33 @@ function ZhiweiPage({ setPage }: { setPage: (p: string) => void }) {
             </div>
           </div>
           <div className="rounded-2xl border border-red-100 bg-white p-6">
-            <h4 className="text-base font-semibold text-emerald-950 mb-4">不替代的内容</h4>
+            <h4 className="text-base font-semibold text-emerald-950 mb-4">知微不替代的</h4>
             <div className="space-y-2.5">
-              {["违法违规定性", "行政处罚建议", "执法裁量判断", "最终专家定论"].map((item) => (
+              {["违法违规定性", "行政执法决定", "行政处罚建议", "最终专家核查与签发"].map((item) => (
                 <div key={item} className="flex items-center gap-3 text-sm text-red-700/60">
                   <AlertTriangle className="h-4 w-4 text-red-400 flex-shrink-0" /> {item}
                 </div>
               ))}
             </div>
+            <p className="mt-4 text-xs leading-5 text-red-600/50 border-t border-red-100 pt-3">
+              本产品为 AI 辅助参考工具，不构成行政执法决定，最终以专家核查为准。
+            </p>
           </div>
         </div>
 
-        {/* 信息安全保障 */}
-        <h3 className="mt-16 text-2xl font-bold text-emerald-950">信息安全保障</h3>
+        {/* 数据安全 */}
+        <h3 className="mt-16 text-2xl font-bold text-emerald-950">数据安全与本地部署</h3>
         <p className="mt-4 max-w-3xl text-sm leading-7 text-emerald-800/50">
-          知微默认采用本地部署思路，核心模型、知识库与审查链路可在本地环境运行。
-          系统强调敏感资料留存在可控环境中，并通过服务端代理、访问鉴权、白名单、速率限制与错误脱敏等措施，提升产品演示与实际部署过程中的信息安全保障能力。
+          全程本地可控：核心模型与敏感资料留在本地环境，数据不出域。
+          接口访问鉴权、白名单与速率限制在本地运行，敏感资料不经公网流转。
         </p>
         <div className="mt-8 grid gap-4 md:grid-cols-5">
           {[
-            { icon: Server, title: "本地部署", desc: "核心能力可在本地环境运行" },
-            { icon: Database, title: "本地知识库", desc: "减少敏感资料外发风险" },
-            { icon: Shield, title: "服务端代理", desc: "浏览器不直连敏感后台接口" },
-            { icon: Lock, title: "鉴权保护", desc: "会话与接口均有访问控制" },
-            { icon: ShieldCheck, title: "安全控制", desc: "支持白名单、限流与错误脱敏" },
+            { icon: Server, title: "本地部署", desc: "核心模型可在本地运行" },
+            { icon: Database, title: "数据不出域", desc: "敏感资料不经公网流转" },
+            { icon: Shield, title: "服务端代理", desc: "浏览器不直连敏感接口" },
+            { icon: Lock, title: "访问鉴权", desc: "会话与接口均有访问控制" },
+            { icon: ShieldCheck, title: "安全管控", desc: "白名单、限流与错误脱敏" },
           ].map((item) => {
             const Icon = item.icon;
             return (
@@ -996,23 +1021,23 @@ function ZhiweiPage({ setPage }: { setPage: (p: string) => void }) {
           })}
         </div>
         <p className="mt-6 text-center text-sm text-emerald-700/50">
-          系统定位为资料审查与复核辅助工具，强调专业支撑、信息安全与可控部署。
+          适用于合规自查、第三方核查及政府规范化评估准备场景。
         </p>
 
         {/* CTA */}
         <div className="mt-16 rounded-2xl border border-emerald-200 bg-emerald-50/50 p-10 text-center">
           <h3 className="text-xl font-bold text-emerald-950">了解知微的实际应用方式</h3>
           <p className="mt-3 max-w-2xl mx-auto text-sm leading-7 text-emerald-800/50">
-            可结合产品演示、现场交流与本地部署方案，进一步了解知微在危险废物资料审查与复核辅助场景中的适用方式。
+            可结合产品演示、现场交流与本地部署方案，进一步了解知微在危废规范化管理与鉴别复核场景中的适用方式。
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-4">
-            <button onClick={() => setPage("demo")}
-              className={`${btnPrimary} px-7 py-2.5`}>
-              查看演示
-            </button>
             <button onClick={() => setPage("contact")}
+              className={`${btnPrimary} px-7 py-2.5`}>
+              申请试用资格
+            </button>
+            <button onClick={() => setPage("demo")}
               className={`${btnSecondary} px-7 py-2.5`}>
-              联系我们
+              预约演示
             </button>
           </div>
         </div>
