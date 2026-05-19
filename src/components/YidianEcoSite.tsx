@@ -625,7 +625,8 @@ function HomePage({ setPage }: { setPage: (p: string) => void }) {
         <div className="mx-auto max-w-7xl px-6">
           <div className="text-center mb-16">
             <div className="text-xs font-medium tracking-[0.25em] uppercase text-emerald-500">案例 · Cases</div>
-            <h2 className="font-display mt-3 text-3xl font-bold text-emerald-950 md:text-4xl">代表项目</h2>
+            <h2 className="font-display mt-3 text-3xl font-bold text-emerald-950 md:text-4xl">公司技术服务实绩</h2>
+            <p className="mt-4 text-sm text-emerald-800/60 max-w-2xl mx-auto">已为地市级生态环境主管部门提供危险废物规范化管理评估技术支撑，并服务于产废企业与危废服务商。</p>
           </div>
           <div className="grid gap-8 md:grid-cols-3">
             {professionalCases.map((item, idx) => (
