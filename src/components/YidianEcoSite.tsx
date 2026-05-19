@@ -504,17 +504,30 @@ function HomePage({ setPage }: { setPage: (p: string) => void }) {
             <div>
               <div className="text-xs font-medium tracking-[0.25em] uppercase text-emerald-500">知微 · Zhīwēi</div>
               <h2 className="font-display mt-3 text-3xl font-bold text-emerald-950 md:text-4xl">
-                知微管理智能体
+                危废规范化管理 + 鉴别复核 双模块审查
               </h2>
-              <p className="mt-4 text-base leading-8 text-emerald-800/50">
-                从危废合规审查到鉴别复核，在海量资料中洞察细微偏差。管理智能体定位，聚焦风险提示与规范化审查。
-              </p>
               <div className="mt-8 space-y-4">
                 {[
-                  { icon: Cpu, title: "危废合规智能审查", desc: "台账、排污许可、环评报告自动交叉比对，在海量资料中识别每一处不一致。" },
-                  { icon: Search, title: "危废鉴别复核", desc: "基于问题树与证据链的鉴别报告专家初审辅助，覆盖采样、检测、标准适用性等关键环节。" },
-                  { icon: Database, title: "环保数据底座", desc: "规则库、问题字典、行业知识图谱——将监管经验沉淀为可复用的数字资产。" },
-                  { icon: BadgeCheck, title: "现场核查", desc: "OCR + AI 视觉双通道，现场照片自动识别标签、容器状态并与台账联动。" },
+                  {
+                    icon: Cpu,
+                    title: "危废规范化管理 · 合规自查与评估准备",
+                    desc: "对照国家危险废物规范化环境管理评估要求，知微逐项核对台账、申报、转移联单、贮存与标识、管理计划、应急与培训，定位每一处差距与缺证，产出可整改的自查底稿。",
+                  },
+                  {
+                    icon: Database,
+                    title: "跨材料语义对齐",
+                    desc: "人工逐档比对难免漏项、口径不一；知微跨多份非结构化材料语义对齐，让全项自查与证据归集第一次成为常态。",
+                  },
+                  {
+                    icon: Search,
+                    title: "危废鉴别 · 复核辅助",
+                    desc: "围绕属性判定与鉴别报告，知微辅助核查采样代表性、检测项目与标准适用性，沿问题树组织证据链。",
+                  },
+                  {
+                    icon: BadgeCheck,
+                    title: "辅助初审，不替代专家判定",
+                    desc: "知微辅助初审，不替代专家最终判定，不输出执法或定性结论。",
+                  },
                 ].map((p) => {
                   const Icon = p.icon;
                   return (
@@ -530,21 +543,20 @@ function HomePage({ setPage }: { setPage: (p: string) => void }) {
                   );
                 })}
               </div>
-              <button onClick={() => setPage("demo")}
+              <button onClick={() => setPage("contact")}
                 className="mt-8 flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald-700 to-teal-600 px-6 py-2.5 text-sm font-medium text-white transition hover:from-emerald-800 hover:to-teal-700">
-                <Play className="h-4 w-4" /> 体验产品演示
+                <Play className="h-4 w-4" /> 申请试用资格
               </button>
             </div>
-            {/* Right: Roadmap — 并排四框 */}
+            {/* Right: Roadmap — 并排框 */}
             <div className="grid grid-cols-2 gap-4">
               {[
-                { version: "V1", title: "台账智能审查", status: "done" },
-                { version: "V1.5", title: "跨资料一致性比对", status: "done" },
-                { version: "V2", title: "现场核查 + 鉴别复核", status: "progress" },
-                { version: "V3", title: "全过程管理智能体", status: "next" },
+                { label: "R1", title: "台账智能审查 · 跨资料一致性比对", status: "done" },
+                { label: "R2", title: "现场核查（OCR+视觉）· 鉴别复核辅助", status: "progress" },
+                { label: "R3", title: "全过程合规审查", status: "next" },
               ].map((item, idx) => (
                 <motion.div
-                  key={item.version}
+                  key={item.label}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, delay: idx * 0.1 }}
@@ -557,14 +569,14 @@ function HomePage({ setPage }: { setPage: (p: string) => void }) {
                       : item.status === "progress"
                       ? "bg-gradient-to-br from-teal-500 to-emerald-500 text-white"
                       : "bg-gradient-to-br from-teal-400 to-sky-400 text-white"
-                  }`}>{item.version}</div>
+                  }`}>{item.label}</div>
                   <div className="mt-3 flex items-center gap-2">
                     <span className="text-sm font-semibold text-emerald-950">{item.title}</span>
                   </div>
                   <div className="mt-1">
                     {item.status === "done" && <span className="text-[10px] text-emerald-500 bg-emerald-50 rounded-full px-2 py-0.5">已上线</span>}
                     {item.status === "progress" && <span className="text-[10px] text-teal-600 bg-teal-50 rounded-full px-2 py-0.5">完善中</span>}
-                    {item.status === "next" && <span className="text-[10px] text-white bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full px-2 py-0.5">Next</span>}
+                    {item.status === "next" && <span className="text-[10px] text-white bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full px-2 py-0.5">持续演进</span>}
                   </div>
                 </motion.div>
               ))}
