@@ -1377,21 +1377,21 @@ function Footer({ setPage }: { setPage: (p: string) => void }) {
           <div className="flex items-center gap-3 text-emerald-900">
             <LogoMark className="h-6 w-6" />
             <div>
-              <div className="text-[10px] tracking-[0.3em] uppercase text-emerald-500">YIDIAN CST</div>
-              <div className="text-sm font-semibold">广州市亿点环保有限公司｜知微危废管理智能体</div>
+              <div className="text-[10px] tracking-[0.3em] uppercase text-emerald-500">ZHIWEI</div>
+              <div className="text-sm font-semibold">广州市亿点环保有限公司｜知微 · 危废规范化管理与鉴别复核智能审查</div>
             </div>
           </div>
-          <p className="mt-4 max-w-md text-xs leading-6 text-emerald-800/40">
-            专注环保咨询服务与数字化产品建设。知微智能体，从危废合规审查与鉴别复核开始，见微知著。
+          <p className="mt-3 text-xs leading-6 text-emerald-800/50">
+            知微见著 · 洞察每一点价值
+          </p>
+          <p className="mt-2 max-w-md text-xs leading-5 text-emerald-800/35">
+            本产品为 AI 辅助参考工具，不构成行政执法决定，最终以专家核查为准。
           </p>
         </div>
         <div>
           <div className="text-xs font-semibold text-emerald-700 mb-3">快速链接</div>
           <div className="grid gap-1.5 text-xs text-emerald-800/50">
-            {[
-              ["about", "关于我们"], ["services", "服务范围"], ["zhiwei", "知微智能体"],
-              ["cases", "项目案例"], ["contact", "联系我们"],
-            ].map(([key, label]) => (
+            {navItems.map(([key, label]) => (
               <button key={key} onClick={() => setPage(key)} className="text-left hover:text-emerald-700 transition">
                 {label}
               </button>
@@ -1407,7 +1407,7 @@ function Footer({ setPage }: { setPage: (p: string) => void }) {
         </div>
       </div>
       <div className="border-t border-emerald-100 py-5 text-center text-xs text-emerald-800/30">
-        &copy; {CURRENT_YEAR} 广州市亿点环保有限公司 &middot; YIDIAN CST
+        &copy; {CURRENT_YEAR} 广州市亿点环保有限公司
       </div>
     </footer>
   );
