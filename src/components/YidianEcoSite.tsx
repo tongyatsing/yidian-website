@@ -287,19 +287,29 @@ function TopNav({ page, setPage }: { page: string; setPage: (p: string) => void 
 
 /* ── Count-up animation hook ── */
 function useCountUp(end: number, duration = 1500, startOnView = true) {
-  const [count, setCount] = useState(0);
+  // 初始值 = end，保证任何情况下都显示真实目标值
+  const [count, setCount] = useState(end);
   const [started, setStarted] = useState(!startOnView);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!startOnView || !ref.current) return;
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setStarted(true); obs.disconnect(); } }, { threshold: 0.3 });
+    const obs = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) {
+        setStarted(true);
+        obs.disconnect();
+      }
+    }, { threshold: 0.3 });
     obs.observe(ref.current);
-    return () => obs.disconnect();
-  }, [startOnView]);
+    // 安全保险：1200ms 后若仍未 started，直接显示 end
+    const fallback = setTimeout(() => setCount(end), 1200);
+    return () => { obs.disconnect(); clearTimeout(fallback); };
+  }, [startOnView, end]);
 
   useEffect(() => {
     if (!started) return;
+    // 进入视口时从 0 重置，然后动画到 end
+    setCount(0);
     let rafId: number;
     const start = performance.now();
     const step = (now: number) => {
@@ -457,14 +467,14 @@ function HomePage({ setPage }: { setPage: (p: string) => void }) {
       </section>
 
       {/* ── 核心优势 ── */}
-      <section className="border-t border-brand-border bg-brand-surface py-24 md:py-32">
-        <div className="mx-auto max-w-7xl px-6">
-          <div className="text-center mb-16">
+      <section className="border-t border-brand-border bg-brand-surface py-16 md:py-24">
+        <div className="mx-auto max-w-6xl px-6">
+          <div className="text-center mb-10">
             <div className="text-xs font-medium tracking-[0.25em] uppercase text-[#05B27D]">优势 · Strengths</div>
-            <h2 className="mt-3 text-3xl font-bold text-brand-ink md:text-4xl lg:text-5xl tracking-tight">知微的核心优势</h2>
-            <p className="mt-4 text-sm text-brand-muted">不只是看见资料，而是看懂问题</p>
+            <h2 className="mt-3 text-3xl font-bold text-brand-ink md:text-4xl tracking-tight">知微的核心优势</h2>
+            <p className="mt-3 text-sm text-brand-muted">不只是看见资料，而是看懂问题</p>
           </div>
-          <div className="grid gap-6 md:grid-cols-4">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {[
               { icon: FileSearch, title: "主动发现异常", desc: "不是被动等查询——知微主动比对台账、申报、联单，指出每一处不一致与缺证。" },
               { icon: Layers, title: "跨非结构化资料语义比对", desc: "无需先标准化录入，直接读懂台账、环评、许可、鉴别报告并语义对齐。" },
@@ -478,12 +488,10 @@ function HomePage({ setPage }: { setPage: (p: string) => void }) {
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, delay: idx * 0.1 }}
                   viewport={{ once: true }}
-                  className="rounded-xl border border-brand-border bg-white p-5 text-center transition hover:shadow-[0_4px_12px_rgba(0,0,0,0.08)] shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
-                  <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl bg-brand-surface text-[#05B27D] mb-4">
-                    <Icon className="h-5 w-5" />
-                  </div>
-                  <h3 className="text-sm font-semibold text-brand-ink">{item.title}</h3>
-                  <p className="mt-1.5 text-xs leading-5 text-brand-muted">{item.desc}</p>
+                  className="rounded-2xl border border-brand-border bg-white p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition hover:shadow-[0_4px_12px_rgba(0,0,0,0.08)]">
+                  <Icon className="h-6 w-6 text-[#05B27D]" />
+                  <h3 className="text-base font-semibold text-brand-ink mt-4">{item.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-brand-muted">{item.desc}</p>
                 </motion.div>
               );
             })}
@@ -492,106 +500,104 @@ function HomePage({ setPage }: { setPage: (p: string) => void }) {
       </section>
 
       {/* ── 知微产品 + 路线图 ── */}
-      <section className="border-t border-brand-border bg-white py-24 md:py-32">
-        <div className="mx-auto max-w-7xl px-6">
-          <div className="grid items-center gap-16 md:grid-cols-2">
-            <div>
-              <div className="text-xs font-medium tracking-[0.25em] uppercase text-[#05B27D]">知微 · Zhīwēi</div>
-              <h2 className="mt-3 text-3xl font-bold text-brand-ink md:text-4xl lg:text-5xl tracking-tight">
-                危废规范化管理 + 鉴别复核 双模块审查
-              </h2>
-              <div className="mt-10 space-y-4">
-                {[
-                  {
-                    icon: Cpu,
-                    title: "危废规范化管理 · 合规自查与评估准备",
-                    desc: "对照国家危险废物规范化环境管理评估要求，知微逐项核对台账、申报、转移联单、贮存与标识、管理计划、应急与培训，定位每一处差距与缺证，产出可整改的自查底稿。",
-                  },
-                  {
-                    icon: Database,
-                    title: "跨材料语义对齐",
-                    desc: "人工逐档比对难免漏项、口径不一；知微跨多份非结构化材料语义对齐，让全项自查与证据归集第一次成为常态。",
-                  },
-                  {
-                    icon: Search,
-                    title: "危废鉴别 · 复核辅助",
-                    desc: "围绕属性判定与鉴别报告，知微辅助核查采样代表性、检测项目与标准适用性，沿问题树组织证据链。",
-                  },
-                  {
-                    icon: BadgeCheck,
-                    title: "辅助初审，不替代专家判定",
-                    desc: "知微辅助初审，不替代专家最终判定，不输出执法或定性结论。",
-                  },
-                ].map((p) => {
-                  const Icon = p.icon;
-                  return (
-                    <div key={p.title} className="flex items-start gap-4 rounded-xl border border-brand-border bg-white p-4 transition hover:shadow-[0_2px_8px_rgba(0,0,0,0.06)] shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
-                      <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-surface text-[#05B27D] flex-shrink-0">
-                        <Icon className="h-4 w-4" />
-                      </div>
-                      <div>
-                        <div className="text-sm font-semibold text-brand-ink">{p.title}</div>
-                        <div className="mt-1 text-xs leading-6 text-brand-muted">{p.desc}</div>
-                      </div>
-                    </div>
-                  );
-                })}
+      <section className="border-t border-brand-border bg-white py-16 md:py-24">
+        <div className="mx-auto max-w-6xl px-6">
+          <div className="text-center mb-10">
+            <div className="text-xs font-medium tracking-[0.25em] uppercase text-[#05B27D]">知微 · Zhīwēi</div>
+            <h2 className="mt-3 text-3xl font-bold text-brand-ink md:text-4xl tracking-tight">
+              危废规范化管理 + 鉴别复核 双模块审查
+            </h2>
+          </div>
+          {/* 两块强面板并排 */}
+          <div className="grid lg:grid-cols-2 gap-6">
+            {/* 模块① */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
+              viewport={{ once: true }}
+              className="rounded-3xl border border-brand-border bg-white p-8 md:p-10 shadow-[0_1px_2px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] transition"
+            >
+              <div className="text-xs font-bold tracking-[0.2em] uppercase text-[#05B27D]">① 规范化管理</div>
+              <h3 className="mt-3 text-2xl font-bold text-brand-ink">合规自查与评估准备</h3>
+              <p className="mt-4 text-brand-muted leading-relaxed">
+                对照国家危险废物规范化环境管理评估要求，知微逐项核对台账、申报、转移联单、贮存与标识、管理计划、应急与培训，定位每一处差距与缺证，产出可整改的自查底稿。
+              </p>
+              <div className="mt-6 border-l-2 border-[#05B27D] pl-4 text-sm text-brand-muted">
+                人工逐档比对难免漏项、口径不一；知微跨多份非结构化材料语义对齐，让全项自查与证据归集第一次成为常态。
               </div>
-              <button onClick={() => setPage("contact")}
-                className="mt-8 flex items-center gap-2 rounded-full bg-brand-gradient px-6 py-2.5 text-sm font-medium text-white transition hover:opacity-90">
-                <Play className="h-4 w-4" /> 申请试用资格
-              </button>
-            </div>
-            {/* Right: Roadmap — 单列，消除 3 卡孤儿格 */}
-            <div className="grid grid-cols-1 gap-4">
-              {[
-                { label: "R1", title: "台账智能审查 · 跨资料一致性比对", status: "done" },
-                { label: "R2", title: "现场核查（OCR+视觉）· 鉴别复核辅助", status: "progress" },
-                { label: "R3", title: "全过程合规审查", status: "next" },
-              ].map((item, idx) => (
-                <motion.div
-                  key={item.label}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, delay: idx * 0.1 }}
-                  viewport={{ once: true }}
-                  className="rounded-xl border border-brand-border bg-white p-5 transition hover:shadow-[0_2px_8px_rgba(0,0,0,0.06)] shadow-[0_1px_2px_rgba(0,0,0,0.04)]"
-                >
-                  <div className={`flex h-10 w-10 items-center justify-center rounded-lg text-sm font-bold ${
-                    item.status === "done"
-                      ? "bg-brand-gradient text-white"
-                      : item.status === "progress"
-                      ? "bg-brand-surface text-[#05B27D] border border-[#05B27D]/20"
-                      : "bg-brand-surface text-brand-muted border border-brand-border"
-                  }`}>{item.label}</div>
-                  <div className="mt-3 flex items-center gap-2">
-                    <span className="text-sm font-semibold text-brand-ink">{item.title}</span>
-                  </div>
-                  <div className="mt-1">
-                    {item.status === "done" && <span className="text-[10px] text-[#05B27D] bg-brand-surface rounded-full px-2 py-0.5">已上线</span>}
-                    {item.status === "progress" && <span className="text-[10px] text-brand-muted bg-brand-surface rounded-full px-2 py-0.5">完善中</span>}
-                    {item.status === "next" && <span className="text-[10px] text-brand-muted bg-brand-surface rounded-full px-2 py-0.5">持续演进</span>}
-                  </div>
-                </motion.div>
-              ))}
-            </div>
+            </motion.div>
+            {/* 模块② */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.1 }}
+              viewport={{ once: true }}
+              className="rounded-3xl border border-brand-border bg-white p-8 md:p-10 shadow-[0_1px_2px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] transition"
+            >
+              <div className="text-xs font-bold tracking-[0.2em] uppercase text-[#05B27D]">② 鉴别复核</div>
+              <h3 className="mt-3 text-2xl font-bold text-brand-ink">鉴别报告专家初审辅助</h3>
+              <p className="mt-4 text-brand-muted leading-relaxed">
+                围绕属性判定与鉴别报告，知微辅助核查采样代表性、检测项目与标准适用性，沿问题树组织证据链，形成可供专家复核的结构化底稿。
+              </p>
+              <div className="mt-6 border-l-2 border-[#05B27D] pl-4 text-sm text-brand-muted">
+                辅助初审，不替代专家最终判定，不输出执法或定性结论。
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Roadmap 紧凑横排 */}
+          <div className="mt-8 grid sm:grid-cols-3 gap-4">
+            {[
+              { label: "R1", title: "台账智能审查 · 跨资料一致性比对", status: "done" },
+              { label: "R2", title: "现场核查（OCR+视觉）· 鉴别复核辅助", status: "progress" },
+              { label: "R3", title: "全过程合规审查", status: "next" },
+            ].map((item, idx) => (
+              <motion.div
+                key={item.label}
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: idx * 0.08 }}
+                viewport={{ once: true }}
+                className="rounded-xl border border-brand-border bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.04)]"
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  <span className={`h-2 w-2 rounded-full flex-shrink-0 ${
+                    item.status === "done" ? "bg-[#05B27D]" : item.status === "progress" ? "bg-amber-400" : "bg-brand-border"
+                  }`} />
+                  <span className={`text-[10px] font-semibold tracking-wider uppercase ${
+                    item.status === "done" ? "text-[#05B27D]" : "text-brand-muted"
+                  }`}>
+                    {item.status === "done" ? "已上线" : item.status === "progress" ? "完善中" : "持续演进"}
+                  </span>
+                </div>
+                <p className="text-sm font-semibold text-brand-ink">{item.title}</p>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="mt-8 flex justify-center">
+            <button onClick={() => setPage("contact")}
+              className="flex items-center gap-2 rounded-full bg-brand-gradient px-6 py-2.5 text-sm font-medium text-white transition hover:opacity-90">
+              <Play className="h-4 w-4" /> 申请试用资格
+            </button>
           </div>
         </div>
       </section>
 
       {/* ── 服务 ── */}
-      <section className="border-t border-brand-border bg-brand-surface py-24 md:py-32">
-        <div className="mx-auto max-w-7xl px-6">
-          <div className="text-center mb-16">
+      <section className="border-t border-brand-border bg-brand-surface py-16 md:py-20">
+        <div className="mx-auto max-w-6xl px-6">
+          <div className="text-center mb-10">
             <div className="text-xs font-medium tracking-[0.25em] uppercase text-[#05B27D]">服务 · Services</div>
-            <h2 className="mt-3 text-3xl font-bold text-brand-ink md:text-4xl lg:text-5xl tracking-tight">核心服务领域</h2>
+            <h2 className="mt-3 text-3xl font-bold text-brand-ink md:text-4xl tracking-tight">核心服务领域</h2>
           </div>
-          <div className="grid gap-x-8 gap-y-8 md:gap-y-12 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {services.slice(0, 6).map((item) => {
               const Icon = item.icon;
               return (
-                <div key={item.title} className="group">
-                  <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-white text-[#05B27D] border border-brand-border transition group-hover:border-[#05B27D]/30 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+                <div key={item.title} className="group rounded-2xl border border-brand-border bg-white p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition hover:shadow-[0_4px_12px_rgba(0,0,0,0.08)]">
+                  <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-brand-surface text-[#05B27D] border border-brand-border transition group-hover:border-[#05B27D]/30">
                     <Icon className="h-5 w-5" />
                   </div>
                   <h3 className="text-base font-semibold text-brand-ink">{item.title}</h3>
@@ -605,22 +611,27 @@ function HomePage({ setPage }: { setPage: (p: string) => void }) {
 
       {/* ── Stats ── */}
       {/* owner-confirmed: 500+ 服务企业（广州市亿点环保有限公司法定代表人口径） */}
-      <section className="border-t border-brand-border bg-white py-20">
+      {/* stats-anchor: 500+ */}
+      <section className="border-t border-brand-border bg-white py-16">
         <div className="mx-auto max-w-5xl px-6">
-          <div className="grid grid-cols-2 gap-12 max-w-sm mx-auto text-center">
-            <CountUpStat num={500} suffix="+" label="服务企业" />
-            <CountUpStat num={2} suffix="" label="双主模块" />
+          <div className="flex flex-wrap justify-center gap-6">
+            <div className="flex-1 min-w-[180px] max-w-[280px] rounded-2xl border border-brand-border bg-white p-8 text-center shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+              <CountUpStat num={500} suffix="+" label="服务企业" />
+            </div>
+            <div className="flex-1 min-w-[180px] max-w-[280px] rounded-2xl border border-brand-border bg-white p-8 text-center shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+              <CountUpStat num={2} suffix="" label="双主模块" />
+            </div>
           </div>
         </div>
       </section>
 
       {/* ── 案例 ── */}
-      <section className="border-t border-brand-border bg-brand-surface py-24 md:py-32">
-        <div className="mx-auto max-w-7xl px-6">
-          <div className="text-center mb-16">
+      <section className="border-t border-brand-border bg-brand-surface py-16 md:py-20">
+        <div className="mx-auto max-w-6xl px-6">
+          <div className="text-center mb-10">
             <div className="text-xs font-medium tracking-[0.25em] uppercase text-[#05B27D]">案例 · Cases</div>
-            <h2 className="mt-3 text-3xl font-bold text-brand-ink md:text-4xl lg:text-5xl tracking-tight">公司技术服务实绩</h2>
-            <p className="mt-4 text-sm text-brand-muted max-w-2xl mx-auto">已为地市级生态环境主管部门提供危险废物规范化管理评估技术支撑，并服务于产废企业与危废服务商。</p>
+            <h2 className="mt-3 text-3xl font-bold text-brand-ink md:text-4xl tracking-tight">公司技术服务实绩</h2>
+            <p className="mt-3 text-sm text-brand-muted max-w-2xl mx-auto">已为地市级生态环境主管部门提供危险废物规范化管理评估技术支撑，并服务于产废企业与危废服务商。</p>
           </div>
           <div className="grid gap-8 md:grid-cols-3">
             {professionalCases.map((item, idx) => (
@@ -654,27 +665,29 @@ function HomePage({ setPage }: { setPage: (p: string) => void }) {
       </section>
 
       {/* ── 关于 ── */}
-      <section className="border-t border-brand-border bg-white py-20 md:py-24">
-        <div className="mx-auto max-w-3xl px-6 text-center">
-          <div className="text-xs font-medium tracking-[0.25em] uppercase text-[#05B27D]">关于 · About</div>
-          <h2 className="mt-3 text-2xl font-bold text-brand-ink md:text-3xl tracking-tight">广州市亿点环保有限公司</h2>
-          <p className="mt-5 text-sm leading-8 text-brand-muted">
-            亿点环保深耕环保咨询，将一线监管经验沉淀为可复用的审查逻辑——知微，从规范化管理与鉴别复核做起。
-          </p>
-          <div className="mt-6 inline-flex flex-wrap justify-center gap-x-4 gap-y-1 text-xs text-brand-muted">
-            <span>软件著作权 5 项</span>
-            <span>·</span>
-            <span>实用新型专利 8 项</span>
-            <span>·</span>
-            <span>发明专利 2 项（优先审查中）</span>
-            <span>·</span>
-            <span>与广东工业大学产学研合作</span>
+      <section className="border-t border-brand-border bg-white py-16">
+        <div className="mx-auto max-w-6xl px-6">
+          <div className="rounded-3xl border border-brand-border bg-brand-surface p-8 md:p-10">
+            <div className="text-xs font-medium tracking-[0.25em] uppercase text-[#05B27D]">关于 · About</div>
+            <h2 className="mt-3 text-2xl font-bold text-brand-ink md:text-3xl tracking-tight">广州市亿点环保有限公司</h2>
+            <p className="mt-4 text-sm leading-8 text-brand-muted max-w-3xl">
+              亿点环保深耕环保咨询，将一线监管经验沉淀为可复用的审查逻辑——知微，从规范化管理与鉴别复核做起。
+            </p>
+            <div className="mt-5 flex flex-wrap gap-x-4 gap-y-1 text-xs text-brand-muted">
+              <span>软件著作权 5 项</span>
+              <span>·</span>
+              <span>实用新型专利 8 项</span>
+              <span>·</span>
+              <span>发明专利 2 项（优先审查中）</span>
+              <span>·</span>
+              <span>与广东工业大学产学研合作</span>
+            </div>
           </div>
         </div>
       </section>
 
       {/* ── CTA ── */}
-      <section className="border-t border-brand-border bg-brand-surface py-24 md:py-28">
+      <section className="border-t border-brand-border bg-brand-surface py-16 md:py-20">
         <div className="mx-auto max-w-2xl px-6 text-center">
           <h2 className="text-2xl font-bold text-brand-ink md:text-4xl leading-tight tracking-tight">
             把合规细节交给知微，把判断留给你。
