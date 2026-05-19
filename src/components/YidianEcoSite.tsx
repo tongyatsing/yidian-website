@@ -349,7 +349,7 @@ function HomePage({ setPage }: { setPage: (p: string) => void }) {
             className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-white px-5 py-2.5 text-sm text-emerald-700 shadow-sm"
           >
             <BadgeCheck className="h-4 w-4 text-emerald-500" />
-            已服务 500+ 企业 · 环保咨询 · 危废管理智能体
+            危废规范化管理 · 鉴别复核 · 全程本地可控
           </motion.div>
 
           <motion.div
@@ -360,10 +360,7 @@ function HomePage({ setPage }: { setPage: (p: string) => void }) {
           >
             <h1 className="font-display text-5xl font-bold leading-tight text-emerald-950 md:text-7xl lg:text-8xl">
               <span className="bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent">
-                知微
-              </span>
-              <span className="ml-2 text-lg font-normal tracking-[0.15em] text-emerald-600/40 md:ml-3 md:text-2xl align-middle">
-                Zhīwēi
+                危废合规，见微知著。
               </span>
             </h1>
             <p className="mt-4 text-lg text-emerald-800/50 md:text-xl tracking-wide">
@@ -377,7 +374,7 @@ function HomePage({ setPage }: { setPage: (p: string) => void }) {
             transition={{ duration: 0.8, delay: 0.5 }}
             className="mt-8 text-center text-sm leading-8 text-emerald-900/70 md:text-base"
           >
-            见微知著的管理智能体——从危废合规审查与鉴别复核开始，在复杂数据中洞察每一处关键偏差
+            知微是危险废物规范化管理与鉴别复核的智能审查助手——在海量台账、申报、联单与鉴别报告中，主动发现关键偏差与证据缺口。
           </motion.p>
 
           <motion.div
@@ -386,13 +383,13 @@ function HomePage({ setPage }: { setPage: (p: string) => void }) {
             transition={{ duration: 0.6, delay: 0.8 }}
             className="mt-8 flex flex-wrap justify-center gap-4"
           >
-            <button onClick={() => setPage("zhiwei")}
+            <button onClick={() => setPage("contact")}
               className="flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald-700 to-teal-600 px-8 py-3.5 font-medium text-white shadow-lg shadow-teal-700/20 transition hover:from-emerald-800 hover:to-teal-700">
-              了解知微 <ChevronRight className="h-4 w-4" />
+              申请试用资格 <ChevronRight className="h-4 w-4" />
             </button>
             <button onClick={() => setPage("demo")}
               className="flex items-center gap-2 rounded-full border border-emerald-200 bg-white px-8 py-3.5 font-medium text-emerald-800 transition hover:bg-emerald-50">
-              <Play className="h-4 w-4" /> 观看演示
+              <Play className="h-4 w-4" /> 预约演示
             </button>
           </motion.div>
 
@@ -411,7 +408,7 @@ function HomePage({ setPage }: { setPage: (p: string) => void }) {
                   <div className="h-3 w-3 rounded-full bg-green-400" />
                 </div>
                 <div className="mx-auto rounded-lg bg-white px-4 py-1 text-xs text-emerald-600 border border-emerald-100">
-                  trial.yidiancst.ai — 知微 · 管理智能体
+                  trial.yidiancst.ai — 知微
                 </div>
               </div>
               <div className="rounded-b-xl bg-gradient-to-b from-emerald-50/50 to-white p-4 md:p-8">
