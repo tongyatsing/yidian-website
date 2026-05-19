@@ -472,10 +472,10 @@ function HomePage({ setPage }: { setPage: (p: string) => void }) {
           </div>
           <div className="grid gap-6 md:grid-cols-4">
             {[
-              { icon: FileSearch, title: "多源交叉审查", desc: "台账、环评、许可证多源资料交叉比对" },
-              { icon: Layers, title: "专家逻辑研判", desc: "按资深固废专家思路组织问题，识别套码、混码、旧码惯性等实质风险" },
-              { icon: ClipboardCheck, title: "证据链自动组织", desc: "自动关联资料依据、支撑证据、反证说明与可信性判断" },
-              { icon: Shield, title: "全程本地可控", desc: "核心模型与敏感资料全程留在本地环境" },
+              { icon: FileSearch, title: "主动发现异常", desc: "不是被动等查询——知微主动比对台账、申报、联单，指出每一处不一致与缺证。" },
+              { icon: Layers, title: "跨非结构化资料语义比对", desc: "无需先标准化录入，直接读懂台账、环评、许可、鉴别报告并语义对齐。" },
+              { icon: ClipboardCheck, title: "专家逻辑研判", desc: "按资深固废专家思路组织问题树，识别套码、混码、旧码惯性等实质风险。" },
+              { icon: Shield, title: "全程本地可控", desc: "核心模型与敏感资料留在本地环境，数据不出域。" },
             ].map((item, idx) => {
               const Icon = item.icon;
               return (
